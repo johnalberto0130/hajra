@@ -562,6 +562,7 @@
                 `;
             }
             personalInfoFields.innerHTML = html;
+            
             // Add event listener for ssn input
             if (countryCode === 'US') {
                 const ssnInput = document.getElementById('ssn');
@@ -630,7 +631,7 @@
                 html = `
                     <div class="form-group visible">
                         <label for="passportUpload" class="required">Passport Scan</label>
-                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*" onchange="checkStep3Validity()">
+                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -638,7 +639,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="selfiePassportUpload" class="required">Selfie with Passport</label>
-                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*" onchange="checkStep3Validity()">
+                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -649,7 +650,7 @@
                 html = `
                     <div class="form-group visible">
                         <label for="frontSide" class="required">Front Side of Document</label>
-                        <input type="file" id="frontSide" name="frontSide" accept="image/*" onchange="checkStep3Validity()">
+                        <input type="file" id="frontSide" name="frontSide" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -657,7 +658,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="backSide" class="required">Back Side of Document</label>
-                        <input type="file" id="backSide" name="backSide" accept="image/*" onchange="checkStep3Validity()">
+                        <input type="file" id="backSide" name="backSide" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -665,7 +666,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="selfieDlId" class="required">Selfie with Document</label>
-                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*" onchange="checkStep3Validity()">
+                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -691,8 +692,8 @@
             } else if (countryCode === 'GB') {
                 const fullName = document.getElementById('fullName').value.trim();
                 const nino = document.getElementById('nino').value.trim();
-                const ninoRegex = /^[A-Z]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[A-Z]$/i;
-                isValid = fullName && ninoRegex.test(nino.toUpperCase().replace(/\s/g, ''));
+                const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
+                isValid = fullName && ninoRegex.test(nino.replace(/\s/g, ''));
             } else if (countryCode) {
                 const firstName = document.getElementById('firstName').value.trim();
                 const lastName = document.getElementById('lastName').value.trim();
