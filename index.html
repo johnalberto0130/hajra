@@ -10,7 +10,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1f1c2c, #3f3b58); /* Background gradient */
+            background: linear-gradient(135deg, #1f1c2c, #3f3b58);
             color: #e4e4f5;
             display: flex;
             justify-content: center;
@@ -32,8 +32,8 @@
             position: relative;
             z-index: 1;
             box-sizing: border-box;
-            opacity: 0; /* GSAP initial state */
-            transform: scale(0.95); /* GSAP initial state */
+            opacity: 0;
+            transform: scale(0.95);
         }
 
         h2 {
@@ -357,6 +357,7 @@
         const glow = document.getElementById('glow');
         const submitBtn = document.getElementById('submitBtn');
         const successAnimation = document.getElementById('successAnimation');
+        const allDocFields = document.querySelectorAll('#passportFields, #selfiePassportField, #dlIdFields');
 
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
@@ -417,16 +418,23 @@
 
         documentTypeSelect.addEventListener('change', () => {
             const selectedType = documentTypeSelect.value;
-            [passportFields, selfiePassportField, dlIdFields].forEach(el => el.classList.remove('visible'));
-            
-            if (selectedType === 'passport') {
-                passportFields.classList.add('visible');
-                selfiePassportField.classList.add('visible');
-                gsap.fromTo([passportFields, selfiePassportField], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
-            } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
-                dlIdFields.classList.add('visible');
-                gsap.fromTo(dlIdFields, { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
-            }
+            // GSAP: Animate out all document fields before showing the new ones
+            gsap.to(allDocFields, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                onComplete: () => {
+                    allDocFields.forEach(el => el.classList.remove('visible')); // Hide them after animation
+                    if (selectedType === 'passport') {
+                        passportFields.classList.add('visible');
+                        selfiePassportField.classList.add('visible');
+                        gsap.fromTo([passportFields, selfiePassportField], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
+                    } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+                        dlIdFields.classList.add('visible');
+                        gsap.fromTo(dlIdFields, { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
+                    }
+                }
+            });
         });
 
         ssnInput.addEventListener('input', (e) => {
@@ -483,22 +491,12 @@
         });
 
         form.addEventListener('submit', (e) => {
-            // Optional: Show success animation before form submission
             // e.preventDefault();
             // gsap.to(form, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
             //     form.style.display = 'none';
             //     successAnimation.style.display = 'block';
             //     gsap.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
-            //     // Now submit the form after a delay
             //     setTimeout(() => e.target.submit(), 1000);
-            // }});
-            
-            // To test the animation without a real form submission
-            // e.preventDefault();
-            // gsap.to(form, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
-            //     form.style.display = 'none';
-            //     successAnimation.style.display = 'block';
-            //     gsap.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
             // }});
         });
     </script>
