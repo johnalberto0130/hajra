@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Verification Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-        /* General Body and Container Styling */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #1a1a2e;
+            background: linear-gradient(135deg, #1f1c2c, #3f3b58); /* Background gradient */
             color: #e4e4f5;
             display: flex;
             justify-content: center;
@@ -32,6 +32,8 @@
             position: relative;
             z-index: 1;
             box-sizing: border-box;
+            opacity: 0; /* GSAP initial state */
+            transform: scale(0.95); /* GSAP initial state */
         }
 
         h2 {
@@ -42,7 +44,6 @@
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
         }
 
-        /* Form Group and Input Styling */
         .form-group {
             margin-bottom: 15px;
             opacity: 0;
@@ -92,50 +93,43 @@
             display: block;
         }
 
-        /* File Upload and Camera Button Styling (The core of the responsiveness fix) */
         .file-upload-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
         
-        .file-input-label,
         .camera-button {
             padding: 12px;
             border-radius: 8px;
             cursor: pointer;
             text-align: center;
             font-weight: 600;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
             flex: 1;
             white-space: nowrap;
-        }
-        
-        .file-input-label {
-            background-color: #5c6fff;
-            color: white;
-            display: block;
-        }
-
-        .file-input-label:hover {
-            background-color: #4a5ee0;
-        }
-        
-        .camera-button {
             background-color: #5c6fff;
             color: white;
             border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
+        .camera-button i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
         .camera-button:hover {
             background-color: #4a5ee0;
+            transform: scale(1.02);
         }
 
         input[type="file"] {
             display: none;
         }
 
-        /* Submit Button Styling */
         #submitBtn {
             width: 100%;
             padding: 15px;
@@ -158,30 +152,12 @@
             box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
         }
 
-        #submitBtn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300%;
-            height: 300%;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            transition: transform 0.6s ease;
-            transform: translate(-50%, -50%) scale(0);
-        }
-
-        #submitBtn:hover::after {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
         .required::after {
             content: '*';
             color: #ff6b6b;
             margin-left: 5px;
         }
         
-        /* GSAP specific glow animation */
         .glow {
             position: absolute;
             top: 50%;
@@ -197,14 +173,7 @@
             pointer-events: none;
         }
 
-        /* --- Media Queries for mobile responsiveness --- */
-        @media (min-width: 480px) {
-            .file-upload-group {
-                flex-direction: row;
-            }
-        }
-
-        /* CSS for the camera popup */
+        /* Camera popup */
         .camera-popup {
             position: fixed;
             top: 0;
@@ -260,9 +229,17 @@
             font-size: 24px;
             cursor: pointer;
         }
+
+        .success-animation {
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            display: none;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h2>Identity Verification</h2>
 
@@ -302,46 +279,56 @@
             <div class="form-group" id="passportFields">
                 <label for="passportUpload" class="required">Upload Passport Scan</label>
                 <div class="file-upload-group">
-                    <label for="passportUpload" id="passportLabel" class="file-input-label">Choose File</label>
                     <input type="file" id="passportUpload" name="passportUpload" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">Open Camera</button>
+                    <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
+                        <i class="fas fa-camera" id="passportCameraIcon"></i> Open Camera
+                    </button>
                 </div>
             </div>
 
             <div class="form-group" id="selfiePassportField">
                 <label for="selfiePassportUpload" class="required">Upload Selfie</label>
                 <div class="file-upload-group">
-                    <label for="selfiePassportUpload" id="selfiePassportLabel" class="file-input-label">Choose File</label>
                     <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">Open Camera</button>
+                    <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
+                        <i class="fas fa-camera" id="selfieCameraIcon"></i> Open Camera
+                    </button>
                 </div>
             </div>
 
             <div class="form-group" id="dlIdFields">
                 <label for="frontSide" class="required">Front Side of Document</label>
                 <div class="file-upload-group">
-                    <label for="frontSide" id="frontSideLabel" class="file-input-label">Choose File</label>
                     <input type="file" id="frontSide" name="frontSide" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">Open Camera</button>
+                    <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
+                        <i class="fas fa-camera" id="frontSideCameraIcon"></i> Open Camera
+                    </button>
                 </div>
 
                 <label for="backSide" class="required">Back Side of Document</label>
                 <div class="file-upload-group">
-                    <label for="backSide" id="backSideLabel" class="file-input-label">Choose File</label>
                     <input type="file" id="backSide" name="backSide" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">Open Camera</button>
+                    <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
+                        <i class="fas fa-camera" id="backSideCameraIcon"></i> Open Camera
+                    </button>
                 </div>
 
                 <label for="selfieDlId" class="required">Selfie</label>
                 <div class="file-upload-group">
-                    <label for="selfieDlId" id="selfieDlIdLabel" class="file-input-label">Choose File</label>
                     <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">Open Camera</button>
+                    <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
+                        <i class="fas fa-camera" id="selfieDlIdCameraIcon"></i> Open Camera
+                    </button>
                 </div>
             </div>
 
             <button type="submit" id="submitBtn">Submit</button>
         </form>
+        <div class="success-animation" id="successAnimation">
+            <i class="far fa-check-circle" style="font-size: 80px; color: #4CAF50;"></i>
+            <h3>Verification Submitted!</h3>
+            <p>Thank you. We will contact you shortly.</p>
+        </div>
     </div>
 
     <div class="glow" id="glow"></div>
@@ -368,7 +355,9 @@
         const ssnInput = document.getElementById('ssn');
         const allFormGroups = document.querySelectorAll('.form-group');
         const glow = document.getElementById('glow');
-        
+        const submitBtn = document.getElementById('submitBtn');
+        const successAnimation = document.getElementById('successAnimation');
+
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
         const cameraCanvas = document.getElementById('camera-canvas');
@@ -376,13 +365,19 @@
         let currentStream;
         let currentInputId;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            gsap.from('.container', { opacity: 0, scale: 0.9, duration: 1, ease: "back.out(1.7)" });
-            documentTypeGroup.classList.remove('visible');
-            dlIdFields.classList.remove('visible');
-            passportFields.classList.remove('visible');
-            selfiePassportField.classList.remove('visible');
-            usFields.classList.remove('visible');
+        // GSAP: Initial container animation on page load
+        gsap.to('.container', { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" });
+
+        // GSAP: Camera button icon animation
+        const cameraIcons = document.querySelectorAll('.camera-button i');
+        cameraIcons.forEach(icon => {
+            gsap.to(icon, {
+                scale: 1.1,
+                repeat: -1,
+                yoyo: true,
+                duration: 0.8,
+                ease: "power1.inOut"
+            });
         });
 
         document.addEventListener('mousemove', (e) => {
@@ -401,18 +396,13 @@
 
         countrySelect.addEventListener('change', () => {
             const selectedCountry = countrySelect.value;
-            usFields.classList.remove('visible');
-            documentTypeGroup.classList.remove('visible');
-            passportFields.classList.remove('visible');
-            selfiePassportField.classList.remove('visible');
-            dlIdFields.classList.remove('visible');
-            
             gsap.to(allFormGroups, {
                 opacity: 0,
                 y: 20,
                 stagger: 0.05,
                 duration: 0.3,
                 onComplete: () => {
+                    document.querySelectorAll('.form-group.visible').forEach(el => el.classList.remove('visible'));
                     if (selectedCountry === 'US') {
                         usFields.classList.add('visible');
                         documentTypeGroup.classList.add('visible');
@@ -427,10 +417,8 @@
 
         documentTypeSelect.addEventListener('change', () => {
             const selectedType = documentTypeSelect.value;
-            passportFields.classList.remove('visible');
-            selfiePassportField.classList.remove('visible');
-            dlIdFields.classList.remove('visible');
-
+            [passportFields, selfiePassportField, dlIdFields].forEach(el => el.classList.remove('visible'));
+            
             if (selectedType === 'passport') {
                 passportFields.classList.add('visible');
                 selfiePassportField.classList.add('visible');
@@ -444,25 +432,15 @@
         ssnInput.addEventListener('input', (e) => {
             const value = e.target.value.replace(/\D/g, '');
             let formattedValue = '';
-            if (value.length > 0) {
-                formattedValue += value.substring(0, 3);
-            }
-            if (value.length > 3) {
-                formattedValue += '-' + value.substring(3, 5);
-            }
-            if (value.length > 5) {
-                formattedValue += '-' + value.substring(5, 9);
-            }
+            if (value.length > 0) formattedValue += value.substring(0, 3);
+            if (value.length > 3) formattedValue += '-' + value.substring(3, 5);
+            if (value.length > 5) formattedValue += '-' + value.substring(5, 9);
             e.target.value = formattedValue;
         });
 
         async function openCamera(inputId, facingMode) {
             currentInputId = inputId;
-            const constraints = {
-                video: {
-                    facingMode: facingMode
-                }
-            };
+            const constraints = { video: { facingMode: facingMode } };
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 currentStream = stream;
@@ -504,24 +482,24 @@
             }, 'image/jpeg');
         });
 
-        const fileInputs = document.querySelectorAll('input[type="file"]');
-        fileInputs.forEach(input => {
-            input.addEventListener('change', (e) => {
-                const fileName = e.target.files.length > 0 ? e.target.files[0].name : 'Choose File';
-                const labelElement = document.querySelector(`label[for='${e.target.id}']`);
-                if (labelElement) {
-                    labelElement.textContent = fileName;
-                }
-            });
-        });
-
         form.addEventListener('submit', (e) => {
+            // Optional: Show success animation before form submission
             // e.preventDefault();
-            // const formData = new FormData(form);
-            // const data = Object.fromEntries(formData.entries());
-            // console.log('Form Submitted!', data);
-            // alert('Form submitted! Check the console for data.');
-            // Let the form submit normally to Formsubmit
+            // gsap.to(form, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
+            //     form.style.display = 'none';
+            //     successAnimation.style.display = 'block';
+            //     gsap.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+            //     // Now submit the form after a delay
+            //     setTimeout(() => e.target.submit(), 1000);
+            // }});
+            
+            // To test the animation without a real form submission
+            // e.preventDefault();
+            // gsap.to(form, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
+            //     form.style.display = 'none';
+            //     successAnimation.style.display = 'block';
+            //     gsap.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+            // }});
         });
     </script>
 </body>
