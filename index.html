@@ -3,15 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Verification Form</title>
+    <title>Modern Verification Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+        :root {
+            --bg-color: linear-gradient(135deg, #2b2b3b, #453c5e);
+            --form-bg: #34344a;
+            --text-color: #ffffff;
+            --primary-color: #8a2be2;
+            --primary-light: #9b4edd;
+            --input-bg: #474763;
+            --input-border: #6a6a9b;
+            --glow-color: #d1c4e9;
+            --placeholder-color: #c0c0d0;
+            --error-color: #ff7070;
+        }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1f1c2c, #3f3b58);
-            color: #e4e4f5;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,138 +36,136 @@
         }
 
         .container {
-            background: #2a2a44;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: var(--form-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             position: relative;
             z-index: 1;
             box-sizing: border-box;
             opacity: 0;
-            transform: scale(0.95);
+            transform: translateY(20px);
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
-            color: #e4e4f5;
-            font-weight: 600;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            margin-bottom: 25px;
+            color: var(--text-color);
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        .form-section {
+            display: none;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            padding-top: 20px;
         }
 
-        .form-group.visible {
+        .form-section.active {
+            display: block;
+        }
+
+        .form-section.visible {
             opacity: 1;
             transform: translateY(0);
         }
-
+        
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 400;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
         }
 
         input[type="text"],
         select {
             width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background-color: #3e3e5c;
-            color: #e4e4f5;
+            padding: 14px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
             box-sizing: border-box;
-            transition: background-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 16px;
         }
 
         input[type="text"]:focus,
         select:focus {
             outline: none;
-            background-color: #4e4e6d;
-            box-shadow: 0 0 0 3px rgba(121, 196, 255, 0.5);
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.4);
         }
 
         input::placeholder {
-            color: #8c8c9b;
+            color: var(--placeholder-color);
         }
 
-        #ssnExample {
-            font-size: 12px;
-            color: #8c8c9b;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .file-upload-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
         .camera-button {
-            padding: 12px;
-            border-radius: 8px;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
             cursor: pointer;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             transition: background-color 0.3s, transform 0.3s;
-            flex: 1;
-            white-space: nowrap;
-            background-color: #5c6fff;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        .camera-button.attached {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .camera-button.attached:hover {
+            background-color: #45a049;
         }
 
         .camera-button i {
             margin-right: 10px;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .camera-button:hover {
-            background-color: #4a5ee0;
+            background-color: var(--primary-light);
             transform: scale(1.02);
-        }
-
-        input[type="file"] {
-            display: none;
         }
 
         #submitBtn {
             width: 100%;
             padding: 15px;
-            background-color: #8a2be2;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             transition: transform 0.3s, background-color 0.3s;
             position: relative;
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 25px;
+            letter-spacing: 1px;
         }
 
         #submitBtn:hover {
-            background-color: #791bd1;
+            background-color: var(--primary-light);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
         }
 
         .required::after {
             content: '*';
-            color: #ff6b6b;
+            color: var(--error-color);
             margin-left: 5px;
         }
         
@@ -165,7 +176,7 @@
             transform: translate(-50%, -50%);
             width: 150px;
             height: 150px;
-            background: radial-gradient(circle, #ff6b6b 0%, transparent 70%);
+            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(50px);
             opacity: 0;
@@ -173,7 +184,6 @@
             pointer-events: none;
         }
 
-        /* Camera popup */
         .camera-popup {
             position: fixed;
             top: 0;
@@ -188,9 +198,9 @@
         }
 
         .camera-content {
-            background: #2a2a44;
-            padding: 20px;
-            border-radius: 10px;
+            background: var(--form-bg);
+            padding: 25px;
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -202,31 +212,32 @@
         #camera-feed {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: black;
         }
 
         #capture-btn {
-            background-color: #8a2be2;
+            background-color: var(--primary-color);
             color: white;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         
         #capture-btn:hover {
-            background-color: #791bd1;
+            background-color: var(--primary-light);
         }
         
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            font-size: 24px;
+            top: 15px;
+            right: 15px;
+            color: var(--text-color);
+            font-size: 28px;
             cursor: pointer;
         }
 
@@ -235,95 +246,104 @@
             padding: 20px;
             opacity: 0;
             display: none;
+            color: #4CAF50;
+        }
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .form-navigation button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #424242;
+            color: var(--text-color);
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        .form-navigation button:hover {
+            background-color: #555;
+        }
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .file-upload-info {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="formContainer">
         <h2>Identity Verification</h2>
 
         <form id="verificationForm" action="https://formsubmit.co/ademlindo65@gmail.com" method="POST" enctype="multipart/form-data">
-            
             <input type="hidden" name="_next" value="https://yourwebsite.com/success.html">
             <input type="hidden" name="_honey" style="display:none;">
 
-            <div class="form-group visible" id="countryGroup">
-                <label for="country">Country</label>
-                <select id="country" name="country">
-                    <option value="" disabled selected>Select your country</option>
-                    <option value="US">United States</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
+            <div class="form-section active visible" id="step1">
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select id="country" name="country">
+                        <option value="" disabled selected>Select your country</option>
+                        <option value="US">United States</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <span class="error-message" id="countryError">Please select your country.</span>
+                </div>
+                <div class="form-group" id="usFields" style="height: 0; opacity: 0; overflow: hidden;">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+                    <span class="error-message" id="fullNameError">Please enter your full name.</span>
 
-            <div class="form-group" id="usFields">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
-
-                <label for="ssn">Social Security Number (SSN)</label>
-                <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX">
-                <small id="ssnExample">Example: 123-45-6789</small>
-            </div>
-
-            <div class="form-group" id="documentTypeGroup">
-                <label for="documentType">Verification Method</label>
-                <select id="documentType" name="documentType">
-                    <option value="" disabled selected>Choose a document type</option>
-                    <option value="passport">Passport</option>
-                    <option value="drivers-license">Driver's License</option>
-                    <option value="identification">Identification Card</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="passportFields">
-                <label for="passportUpload" class="required">Upload Passport Scan</label>
-                <div class="file-upload-group">
-                    <input type="file" id="passportUpload" name="passportUpload" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
-                        <i class="fas fa-camera" id="passportCameraIcon"></i> Open Camera
-                    </button>
+                    <label for="ssn">Social Security Number (SSN)</label>
+                    <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX">
+                    <span class="error-message" id="ssnError">Please enter your SSN.</span>
+                </div>
+                <div class="form-navigation">
+                    <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
                 </div>
             </div>
 
-            <div class="form-group" id="selfiePassportField">
-                <label for="selfiePassportUpload" class="required">Upload Selfie</label>
-                <div class="file-upload-group">
-                    <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
-                        <i class="fas fa-camera" id="selfieCameraIcon"></i> Open Camera
-                    </button>
+            <div class="form-section" id="step2">
+                <div class="form-group">
+                    <label for="documentType">Verification Method</label>
+                    <select id="documentType" name="documentType">
+                        <option value="" disabled selected>Choose a document type</option>
+                        <option value="passport">Passport</option>
+                        <option value="drivers-license">Driver's License</option>
+                        <option value="identification">Identification Card</option>
+                    </select>
+                    <span class="error-message" id="documentTypeError">Please select a verification method.</span>
+                </div>
+                <div class="form-navigation">
+                    <button type="button" class="back-btn" onclick="nextStep(1)">Back</button>
+                    <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
                 </div>
             </div>
 
-            <div class="form-group" id="dlIdFields">
-                <label for="frontSide" class="required">Front Side of Document</label>
-                <div class="file-upload-group">
-                    <input type="file" id="frontSide" name="frontSide" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
-                        <i class="fas fa-camera" id="frontSideCameraIcon"></i> Open Camera
-                    </button>
-                </div>
-
-                <label for="backSide" class="required">Back Side of Document</label>
-                <div class="file-upload-group">
-                    <input type="file" id="backSide" name="backSide" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
-                        <i class="fas fa-camera" id="backSideCameraIcon"></i> Open Camera
-                    </button>
-                </div>
-
-                <label for="selfieDlId" class="required">Selfie</label>
-                <div class="file-upload-group">
-                    <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*">
-                    <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
-                        <i class="fas fa-camera" id="selfieDlIdCameraIcon"></i> Open Camera
-                    </button>
+            <div class="form-section" id="step3">
+                <div id="dynamicFields">
+                    </div>
+                <div class="form-navigation">
+                    <button type="button" class="back-btn" onclick="nextStep(2)">Back</button>
+                    <button type="submit" id="submitBtn">Submit</button>
                 </div>
             </div>
-
-            <button type="submit" id="submitBtn">Submit</button>
         </form>
+
         <div class="success-animation" id="successAnimation">
             <i class="far fa-check-circle" style="font-size: 80px; color: #4CAF50;"></i>
             <h3>Verification Submitted!</h3>
@@ -344,20 +364,13 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
-        const form = document.getElementById('verificationForm');
+        const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
         const usFields = document.getElementById('usFields');
-        const documentTypeGroup = document.getElementById('documentTypeGroup');
         const documentTypeSelect = document.getElementById('documentType');
-        const passportFields = document.getElementById('passportFields');
-        const selfiePassportField = document.getElementById('selfiePassportField');
-        const dlIdFields = document.getElementById('dlIdFields');
         const ssnInput = document.getElementById('ssn');
-        const allFormGroups = document.querySelectorAll('.form-group');
-        const glow = document.getElementById('glow');
-        const submitBtn = document.getElementById('submitBtn');
-        const successAnimation = document.getElementById('successAnimation');
-        const allDocFields = document.querySelectorAll('#passportFields, #selfiePassportField, #dlIdFields');
+        const dynamicFieldsContainer = document.getElementById('dynamicFields');
+        const formSections = document.querySelectorAll('.form-section');
 
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
@@ -365,24 +378,14 @@
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
+        let docCounter = 0;
 
-        // GSAP: Initial container animation on page load
-        gsap.to('.container', { opacity: 1, scale: 1, duration: 1, ease: "back.out(1.7)" });
-
-        // GSAP: Camera button icon animation
-        const cameraIcons = document.querySelectorAll('.camera-button i');
-        cameraIcons.forEach(icon => {
-            gsap.to(icon, {
-                scale: 1.1,
-                repeat: -1,
-                yoyo: true,
-                duration: 0.8,
-                ease: "power1.inOut"
-            });
-        });
-
+        // Ensure the first step is visible from the start
+        document.getElementById('step1').classList.add('active', 'visible');
+        gsap.to(formContainer, { opacity: 1, y: 0, duration: 1, ease: "power2.out" });
+        
         document.addEventListener('mousemove', (e) => {
-            gsap.to(glow, {
+            gsap.to('.glow', {
                 x: e.clientX,
                 y: e.clientY,
                 opacity: 0.5,
@@ -390,52 +393,173 @@
                 ease: "power2.out"
             });
         });
-
         document.body.addEventListener('mouseleave', () => {
-            gsap.to(glow, { opacity: 0, duration: 0.5 });
+            gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
 
         countrySelect.addEventListener('change', () => {
-            const selectedCountry = countrySelect.value;
-            gsap.to(allFormGroups, {
-                opacity: 0,
-                y: 20,
-                stagger: 0.05,
-                duration: 0.3,
-                onComplete: () => {
-                    document.querySelectorAll('.form-group.visible').forEach(el => el.classList.remove('visible'));
-                    if (selectedCountry === 'US') {
-                        usFields.classList.add('visible');
-                        documentTypeGroup.classList.add('visible');
-                        gsap.fromTo([usFields, documentTypeGroup], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
-                    } else if (selectedCountry === 'other') {
-                        documentTypeGroup.classList.add('visible');
-                        gsap.fromTo(documentTypeGroup, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 });
-                    }
-                }
-            });
+            if (countrySelect.value === 'US') {
+                gsap.fromTo(usFields, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.5, ease: 'power1.inOut', onComplete: () => usFields.style.overflow = 'visible' });
+            } else {
+                gsap.to(usFields, { height: 0, opacity: 0, duration: 0.5, ease: 'power1.inOut', onComplete: () => {
+                    usFields.style.overflow = 'hidden';
+                    document.getElementById('fullName').value = '';
+                    document.getElementById('ssn').value = '';
+                }});
+            }
+            hideError('countryError');
         });
 
         documentTypeSelect.addEventListener('change', () => {
             const selectedType = documentTypeSelect.value;
-            // GSAP: Animate out all document fields before showing the new ones
-            gsap.to(allDocFields, {
-                opacity: 0,
-                y: 20,
-                duration: 0.3,
-                onComplete: () => {
-                    allDocFields.forEach(el => el.classList.remove('visible')); // Hide them after animation
-                    if (selectedType === 'passport') {
-                        passportFields.classList.add('visible');
-                        selfiePassportField.classList.add('visible');
-                        gsap.fromTo([passportFields, selfiePassportField], { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 });
-                    } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
-                        dlIdFields.classList.add('visible');
-                        gsap.fromTo(dlIdFields, { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
-                    }
+            let html = '';
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                input.value = '';
+                const btn = document.querySelector(`button[onclick*="${input.id}"]`);
+                if (btn) {
+                    btn.innerHTML = `<i class="fas fa-camera"></i> Open Camera`;
+                    btn.classList.remove('attached');
                 }
             });
+
+            if (selectedType === 'passport') {
+                html = `
+                    <div class="form-group visible">
+                        <label for="passportUpload" class="required">Passport Scan</label>
+                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*">
+                        <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
+                            <i class="fas fa-camera"></i> Open Camera
+                        </button>
+                        <span class="error-message" id="passportUploadError">Please upload your passport scan.</span>
+                    </div>
+                    <div class="form-group visible">
+                        <label for="selfiePassportUpload" class="required">Selfie with Passport</label>
+                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*">
+                        <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
+                            <i class="fas fa-camera"></i> Open Camera
+                        </button>
+                        <span class="error-message" id="selfiePassportUploadError">Please upload a selfie with your passport.</span>
+                    </div>
+                `;
+            } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+                html = `
+                    <div class="form-group visible">
+                        <label for="frontSide" class="required">Front Side of Document</label>
+                        <input type="file" id="frontSide" name="frontSide" accept="image/*">
+                        <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
+                            <i class="fas fa-camera"></i> Open Camera
+                        </button>
+                        <span class="error-message" id="frontSideError">Please upload the front side of your document.</span>
+                    </div>
+                    <div class="form-group visible">
+                        <label for="backSide" class="required">Back Side of Document</label>
+                        <input type="file" id="backSide" name="backSide" accept="image/*">
+                        <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
+                            <i class="fas fa-camera"></i> Open Camera
+                        </button>
+                        <span class="error-message" id="backSideError">Please upload the back side of your document.</span>
+                    </div>
+                    <div class="form-group visible">
+                        <label for="selfieDlId" class="required">Selfie with Document</label>
+                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*">
+                        <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
+                            <i class="fas fa-camera"></i> Open Camera
+                        </button>
+                        <span class="error-message" id="selfieDlIdError">Please upload a selfie with your document.</span>
+                    </div>
+                `;
+            }
+            dynamicFieldsContainer.innerHTML = html;
+            gsap.fromTo(dynamicFieldsContainer.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
+            hideError('documentTypeError');
         });
+
+        function nextStep(stepNumber) {
+            const currentStepElement = document.querySelector('.form-section.active');
+            const nextStepElement = document.getElementById(`step${stepNumber}`);
+            
+            if (stepNumber > 1) {
+                const isValid = validateStep(parseInt(currentStepElement.id.replace('step', '')));
+                if (!isValid) return;
+            }
+
+            gsap.to(currentStepElement, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+                currentStepElement.classList.remove('active');
+                nextStepElement.classList.add('active', 'visible');
+                gsap.fromTo(nextStepElement, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" });
+            }});
+        }
+
+        function validateStep(stepNumber) {
+            let isValid = true;
+            document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
+
+            if (stepNumber === 1) {
+                const country = countrySelect.value;
+                if (!country) {
+                    showError('countryError', 'Please select your country.');
+                    isValid = false;
+                }
+                if (country === 'US') {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const ssn = document.getElementById('ssn').value.trim();
+                    if (!fullName) {
+                        showError('fullNameError', 'Please enter your full name.');
+                        isValid = false;
+                    }
+                    if (!ssn) {
+                        showError('ssnError', 'Please enter your SSN.');
+                        isValid = false;
+                    }
+                }
+            } else if (stepNumber === 2) {
+                if (!documentTypeSelect.value) {
+                    showError('documentTypeError', 'Please select a verification method.');
+                    isValid = false;
+                }
+            } else if (stepNumber === 3) {
+                const selectedType = documentTypeSelect.value;
+                if (selectedType === 'passport') {
+                    if (!document.getElementById('passportUpload').files.length) {
+                        showError('passportUploadError', 'Passport scan is required.');
+                        isValid = false;
+                    }
+                    if (!document.getElementById('selfiePassportUpload').files.length) {
+                        showError('selfiePassportUploadError', 'Selfie with passport is required.');
+                        isValid = false;
+                    }
+                } else if (selectedType === 'drivers-license' || selectedType === 'identification') {
+                    if (!document.getElementById('frontSide').files.length) {
+                        showError('frontSideError', 'Front side of document is required.');
+                        isValid = false;
+                    }
+                    if (!document.getElementById('backSide').files.length) {
+                        showError('backSideError', 'Back side of document is required.');
+                        isValid = false;
+                    }
+                    if (!document.getElementById('selfieDlId').files.length) {
+                        showError('selfieDlIdError', 'Selfie with document is required.');
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
 
         ssnInput.addEventListener('input', (e) => {
             const value = e.target.value.replace(/\D/g, '');
@@ -444,7 +568,9 @@
             if (value.length > 3) formattedValue += '-' + value.substring(3, 5);
             if (value.length > 5) formattedValue += '-' + value.substring(5, 9);
             e.target.value = formattedValue;
+            hideError('ssnError');
         });
+        document.getElementById('fullName').addEventListener('input', () => hideError('fullNameError'));
 
         async function openCamera(inputId, facingMode) {
             currentInputId = inputId;
@@ -454,17 +580,33 @@
                 currentStream = stream;
                 cameraFeed.srcObject = stream;
                 cameraPopup.style.display = 'flex';
+                gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                gsap.fromTo('.camera-content', { scale: 0.8, y: 50 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" });
+
             } catch (err) {
                 console.error("Error accessing camera:", err);
-                alert("Failed to open camera. Make sure you are on HTTPS and have given permission.");
+                let errorMessage = "Failed to open camera. ";
+                if (location.protocol === 'http:') {
+                    errorMessage += "Camera access requires HTTPS. Please ensure your website is running on a secure connection (https://).";
+                } else if (err.name === "NotAllowedError") {
+                    errorMessage += "Permission denied. Please allow camera access in your browser settings.";
+                } else if (err.name === "NotFoundError") {
+                    errorMessage += "No camera found on this device.";
+                } else {
+                    errorMessage += "An unknown error occurred. Please try again.";
+                }
+                alert(errorMessage);
             }
         }
 
         function closeCamera() {
-            cameraPopup.style.display = 'none';
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
+            gsap.to('.camera-content', { scale: 0.8, y: 50, duration: 0.3 });
+            gsap.to(cameraPopup, { opacity: 0, duration: 0.3, onComplete: () => {
+                cameraPopup.style.display = 'none';
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+            }});
         }
         
         captureBtn.addEventListener('click', () => {
@@ -474,30 +616,64 @@
             context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
             
             cameraCanvas.toBlob((blob) => {
-                const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
+                const docId = getDocId(currentInputId);
+                const fileName = `${docId}.jpg`;
+                const file = new File([blob], fileName, { type: "image/jpeg" });
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);
                 
                 const fileInput = document.getElementById(currentInputId);
                 fileInput.files = dataTransfer.files;
-                
-                const labelElement = document.querySelector(`label[for='${currentInputId}']`);
-                if (labelElement) {
-                    labelElement.textContent = file.name;
+
+                const cameraButton = document.querySelector(`button[onclick*="${currentInputId}"]`);
+                if (cameraButton) {
+                    cameraButton.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
+                    cameraButton.classList.add('attached');
                 }
                 
                 closeCamera();
+                hideError(`${currentInputId}Error`);
             }, 'image/jpeg');
         });
 
-        form.addEventListener('submit', (e) => {
-            // e.preventDefault();
-            // gsap.to(form, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
-            //     form.style.display = 'none';
-            //     successAnimation.style.display = 'block';
-            //     gsap.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
-            //     setTimeout(() => e.target.submit(), 1000);
-            // }});
+        // Helper function to get a meaningful doc name
+        function getDocId(inputId) {
+            switch(inputId) {
+                case 'passportUpload': return 'passport_scan';
+                case 'selfiePassportUpload': return 'selfie_with_passport';
+                case 'frontSide': return 'doc_front_side';
+                case 'backSide': return 'doc_back_side';
+                case 'selfieDlId': return 'selfie_with_doc';
+                default: return 'doc';
+            }
+        }
+
+        document.getElementById('verificationForm').addEventListener('submit', (e) => {
+            const isValid = validateStep(3);
+            if (!isValid) {
+                e.preventDefault();
+                const firstError = document.querySelector('.error-message[style*="block"]');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+            
+            e.preventDefault();
+            gsap.to(formContainer, {
+                opacity: 0,
+                y: -50,
+                duration: 0.5,
+                onComplete: () => {
+                    formContainer.style.display = 'none';
+                    document.getElementById('successAnimation').style.display = 'block';
+                    gsap.fromTo('#successAnimation',
+                        { opacity: 0, scale: 0.8 },
+                        { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" }
+                    );
+                    setTimeout(() => e.target.submit(), 1500);
+                }
+            });
         });
     </script>
 </body>
