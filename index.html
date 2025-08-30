@@ -732,7 +732,7 @@
         }
         
         gsap.to('.glow', { opacity: 0.5, duration: 1.5, repeat: -1, yoyo: true });
-        gsap.to('.modal-content', { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+        gsap.fromTo('.modal-content', { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -1175,63 +1175,47 @@
         // Submit form with File objects
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            // Append stored File objects to the form data
+            
+            // Create a FormData object from the form
             const formData = new FormData(form);
+            
+            // Append the captured image files
             for (const key in fileData) {
-                formData.append(key, fileData[key], fileData[key].name);
+                if (fileData[key] instanceof File) {
+                    formData.append(key, fileData[key], fileData[key].name);
+                }
             }
 
-            // Create a temporary form to submit the data
-            const tempForm = document.createElement('form');
-            tempForm.method = 'POST';
-            tempForm.action = form.action;
-            tempForm.enctype = 'multipart/form-data';
-            tempForm.style.display = 'none';
-
-            for (const pair of formData.entries()) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = pair[0];
-                if (pair[1] instanceof File) {
-                    // For files, we need to handle them differently if we are to submit with FormData
-                    // In a real application, you would use fetch() for a cleaner submission
-                    console.log(`Appending file: ${pair[1].name}`);
+            // Use fetch to submit the form data to FormSubmit.co
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showSuccessAnimation();
                 } else {
-                    input.value = pair[1];
-                    tempForm.appendChild(input);
+                    return response.json().then(data => {
+                        if (Object.hasOwnProperty.call(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert("Oops! There was a problem submitting your form");
+                        }
+                    });
                 }
-            }
+            })
+            .catch(error => {
+                alert("Oops! There was a problem submitting your form");
+                console.error(error);
+            });
+        });
 
-            // In a real-world scenario, you would send this FormData using fetch or an XMLHttpRequest
-            // For formsubmit.co, it works by appending fields, but files are tricky. The easiest way
-            // is to use fetch(). Here's a placeholder for the animation.
-
-            const timeline = gsap.timeline({ onComplete: () => {
-                // In a production environment, you would use fetch here:
-                // fetch(form.action, { method: 'POST', body: formData })
-                // .then(response => {
-                //     if (response.ok) {
-                //         console.log('Form submitted successfully!');
-                //     } else {
-                //         console.error('Form submission failed.');
-                //     }
-                // })
-                // .catch(error => console.error('Error:', error));
-
-                // Since we're not running a server, we'll just log the data and reset the form.
-                console.log('Simulating form submission. Data to be sent:');
-                for (const pair of formData.entries()) {
-                    console.log(`${pair[0]}: ${pair[1] instanceof File ? pair[1].name : pair[1]}`);
-                }
-                
-                // Clear the file data and reset the form for the next use
-                for (const key in fileData) {
-                    delete fileData[key];
-                }
-                form.reset();
-                
-            }});
+        // --- Success Animation ---
+        function showSuccessAnimation() {
+            const timeline = gsap.timeline();
             
             timeline.to(formContainer, { opacity: 0, duration: 0.2, onComplete: () => {
                 formContainer.style.display = 'none';
@@ -1242,7 +1226,7 @@
             .fromTo('.checkmark__check', { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
             .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.2")
             .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.1");
-        });
+        }
 
         // --- Navigation Buttons ---
         nextBtn1.addEventListener('click', () => { nextStep(2); });
