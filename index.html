@@ -24,6 +24,8 @@
             --next-btn-active: #4CAF50;
             --next-btn-hover: #45a049;
             --next-btn-inactive: #6a6a9b;
+            --capture-btn-color: #6ee66e; /* Light green for capture button */
+            --capture-btn-hover-color: #5ac45a;
         }
 
         body {
@@ -267,11 +269,14 @@
         #camera-container {
             position: relative;
             width: 100%;
-            padding-top: 75%; /* 4:3 aspect ratio */
+            padding-top: 75%; /* 4:3 aspect ratio for video, prevents zoom */
             background-color: #000;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 20px;
+            display: flex; /* For centering the video feed and overlay */
+            justify-content: center;
+            align-items: center;
         }
 
         #camera-feed {
@@ -280,7 +285,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Ensures the video fills the container without being zoomed too much */
         }
         
         .camera-overlay {
@@ -300,20 +305,34 @@
             border: 2px dashed rgba(255, 255, 255, 0.7);
             border-radius: 8px;
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+            /* Ensure the frame scales responsively */
+            max-width: 90%; 
+            max-height: 90%;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            padding: 5px;
         }
 
         .camera-overlay-frame.id-card {
-            width: 80%;
-            height: 50%;
+            width: 85%; /* Wider for landscape */
+            height: 60%; /* Taller for landscape */
+            aspect-ratio: 1.6 / 1; /* Standard ID card aspect ratio */
         }
 
         .camera-overlay-frame.passport {
-            width: 70%;
-            height: 90%;
+            width: 60%; /* Taller for portrait-like passport photo */
+            height: 80%;
+            aspect-ratio: 2 / 3; /* Standard passport photo aspect ratio */
         }
         
         #capture-btn {
-            background-color: var(--primary-color);
+            background-color: var(--capture-btn-color); /* Light green */
             color: white;
             padding: 15px 30px;
             border: none;
@@ -324,14 +343,14 @@
         }
         
         #capture-btn:hover {
-            background-color: var(--primary-light);
+            background-color: var(--capture-btn-hover-color);
         }
         
         .close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            color: var(--error-color);
+            color: var(--error-color); /* Red 'X' */
             font-size: 28px;
             cursor: pointer;
             background-color: rgba(0, 0, 0, 0.4);
@@ -345,6 +364,20 @@
         }
         .close-btn:hover {
             background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 10%;
+            width: 80%;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            background-color: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: none; /* Hidden by default, shown when an overlay is active */
+            z-index: 2;
         }
 
         .success-animation {
@@ -455,12 +488,12 @@
 
     <div class="camera-popup" id="cameraPopup">
         <div class="camera-content">
-            <span class="close-btn" onclick="closeCamera()">&times;</span>
+            <span class="close-btn" onclick="closeCamera()">X</span>
             <div id="camera-container">
-                <video id="camera-feed" autoplay></video>
-                <div class="camera-overlay">
+                <video id="camera-feed" autoplay playsinline></video> <div class="camera-overlay">
                     <div id="camera-overlay-frame" class="camera-overlay-frame"></div>
                 </div>
+                <div class="overlay-text" id="overlayText"></div>
             </div>
             <canvas id="camera-canvas" style="display:none;"></canvas>
             <button id="capture-btn">Capture Photo</button>
@@ -486,6 +519,7 @@
         const cameraFeed = document.getElementById('camera-feed');
         const cameraCanvas = document.getElementById('camera-canvas');
         const cameraOverlayFrame = document.getElementById('camera-overlay-frame');
+        const overlayText = document.getElementById('overlayText');
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
@@ -732,7 +766,7 @@
             dynamicFieldsContainer.innerHTML = html;
             // Restore previous file states
             for (const key in fileData) {
-                const button = document.querySelector(`[onclick*="'${key}'"]`);
+                const button = document.querySelector(`button[onclick*="'${key}'"]`);
                 if (button) {
                     button.classList.add('attached');
                     const fileName = fileData[key].name;
@@ -757,7 +791,7 @@
                 const fullName = document.getElementById('fullName').value.trim();
                 const nino = document.getElementById('nino').value.trim();
                 const ninoRegex = /^[A-Z]{2}[0-9]{6}[A-Z]$/i;
-                isValid = fullName && ninoRegex.test(nino.replace(/\s/g, ''));
+                isValid = fullName && ninoRegex.test(nino.replace(/\s/g, '').toUpperCase());
             } else if (countryCode) {
                 const firstName = document.getElementById('firstName').value.trim();
                 const lastName = document.getElementById('lastName').value.trim();
@@ -933,7 +967,10 @@
         // --- Camera & File Handling ---
         async function openCamera(inputId, facingMode, overlayType) {
             currentInputId = inputId;
-            const constraints = { video: { facingMode: facingMode } };
+            // Use 'user' for front camera (selfie) and 'environment' for rear camera
+            const finalFacingMode = (overlayType === 'passport-selfie' || overlayType === 'id-card-selfie') ? 'user' : 'environment';
+            const constraints = { video: { facingMode: finalFacingMode, width: { ideal: 1280 }, height: { ideal: 720 } } }; // Request higher resolution
+
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 currentStream = stream;
@@ -942,12 +979,19 @@
                 
                 // Set overlay class based on document type
                 cameraOverlayFrame.className = 'camera-overlay-frame';
-                if (overlayType === 'id-card') {
+                overlayText.style.display = 'none'; // Hide text by default
+
+                if (overlayType === 'id-card' || overlayType === 'id-card-selfie') {
                     cameraOverlayFrame.classList.add('id-card');
-                } else if (overlayType === 'passport') {
+                    overlayText.textContent = "Please place your ID/Driver's License horizontally within the frame.";
+                    overlayText.style.display = 'block';
+                } else if (overlayType === 'passport' || overlayType === 'passport-selfie') {
                     cameraOverlayFrame.classList.add('passport');
+                    overlayText.textContent = "Please place your Passport vertically within the frame.";
+                    overlayText.style.display = 'block';
                 } else {
                     cameraOverlayFrame.classList.remove('id-card', 'passport');
+                    overlayText.textContent = "";
                 }
 
                 gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
@@ -955,12 +999,14 @@
             } catch (err) {
                 console.error("Error accessing camera:", err);
                 let errorMessage = "Failed to access camera. ";
-                if (location.protocol === 'http:') {
+                if (location.protocol !== 'https:') {
                     errorMessage += "Camera access requires HTTPS. Please ensure your website is running on a secure connection (https://).";
                 } else if (err.name === "NotAllowedError") {
                     errorMessage += "Permission denied. Please allow camera access in your browser settings.";
                 } else if (err.name === "NotFoundError") {
                     errorMessage += "No camera found on this device.";
+                } else if (err.name === "OverconstrainedError") {
+                    errorMessage += "Camera could not be accessed with the requested constraints (e.g., resolution). Try a different camera or lower settings.";
                 } else {
                     errorMessage += "An unknown error occurred. Please try again.";
                 }
