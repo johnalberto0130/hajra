@@ -419,6 +419,10 @@
             font-weight: bold;
         }
 
+        .check-circle-path {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+        }
     </style>
 </head>
 <body>
@@ -453,7 +457,7 @@
 
             <div class="form-section" id="step2">
                 <div class="form-group" style="text-align: center;">
-                    <label for="documentType">Verification Method</label>
+                    <label>Verification Method</label>
                     <input type="hidden" id="documentType" name="documentType">
                     <div class="document-options">
                         </div>
@@ -476,7 +480,10 @@
         </form>
 
         <div class="success-animation" id="successAnimation">
-            <i class="far fa-check-circle" style="font-size: 80px; color: #4CAF50;"></i>
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
             <h3>Verification Submitted!</h3>
             <p>Thank you. We will contact you shortly.</p>
         </div>
@@ -509,6 +516,7 @@
         const backBtn2 = document.getElementById('backBtn2');
         const backBtn3 = document.getElementById('backBtn3');
         const documentOptionsContainer = document.querySelector('.document-options');
+        const successAnimation = document.getElementById('successAnimation');
 
         // Camera Elements
         const cameraPopup = document.getElementById('cameraPopup');
@@ -591,6 +599,30 @@
         });
         document.body.addEventListener('mouseleave', () => {
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
+        });
+
+        // Animation for input focus
+        document.querySelectorAll('input[type="text"], select').forEach(element => {
+            element.addEventListener('focus', () => {
+                gsap.to(element, { scale: 1.02, duration: 0.3, ease: "back.out(1.7)" });
+            });
+            element.addEventListener('blur', () => {
+                gsap.to(element, { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // Animation for navigation buttons on hover
+        document.querySelectorAll('.form-navigation button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                if (!button.disabled) {
+                    gsap.to(button, { y: -5, duration: 0.3, ease: "power1.out" });
+                }
+            });
+            button.addEventListener('mouseleave', () => {
+                if (!button.disabled) {
+                    gsap.to(button, { y: 0, duration: 0.3, ease: "power1.out" });
+                }
+            });
         });
 
         // --- Core Functions ---
@@ -1098,6 +1130,18 @@
                 }
                 return;
             }
+            
+            e.preventDefault();
+            gsap.to(formContainer, { opacity: 0, duration: 0.5, onComplete: () => {
+                formContainer.style.display = 'none';
+                successAnimation.style.display = 'block';
+                gsap.to(successAnimation, { opacity: 1, duration: 0.5 });
+                
+                const timeline = gsap.timeline();
+                timeline.fromTo('.checkmark__check', { strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1, ease: "power2.inOut" })
+                        .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.5")
+                        .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+            }});
         });
 
         // --- Navigation Buttons ---
