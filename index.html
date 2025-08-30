@@ -244,7 +244,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
@@ -261,16 +261,57 @@
             width: 90%;
             max-width: 500px;
             position: relative;
+            box-sizing: border-box;
+        }
+        
+        #camera-container {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* 4:3 aspect ratio */
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
         #camera-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            background-color: black;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+        
+        .camera-overlay-frame {
+            border: 2px dashed rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
         }
 
+        .camera-overlay-frame.id-card {
+            width: 80%;
+            height: 50%;
+        }
+
+        .camera-overlay-frame.passport {
+            width: 70%;
+            height: 90%;
+        }
+        
         #capture-btn {
             background-color: var(--primary-color);
             color: white;
@@ -290,9 +331,20 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            color: var(--text-color);
+            color: var(--error-color);
             font-size: 28px;
             cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .close-btn:hover {
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
         .success-animation {
@@ -404,7 +456,12 @@
     <div class="camera-popup" id="cameraPopup">
         <div class="camera-content">
             <span class="close-btn" onclick="closeCamera()">&times;</span>
-            <video id="camera-feed" autoplay></video>
+            <div id="camera-container">
+                <video id="camera-feed" autoplay></video>
+                <div class="camera-overlay">
+                    <div id="camera-overlay-frame" class="camera-overlay-frame"></div>
+                </div>
+            </div>
             <canvas id="camera-canvas" style="display:none;"></canvas>
             <button id="capture-btn">Capture Photo</button>
         </div>
@@ -412,6 +469,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
+        // DOM Elements
         const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
         const personalInfoFields = document.getElementById('personalInfoFields');
@@ -423,17 +481,24 @@
         const backBtn2 = document.getElementById('backBtn2');
         const backBtn3 = document.getElementById('backBtn3');
 
+        // Camera Elements
         const cameraPopup = document.getElementById('cameraPopup');
         const cameraFeed = document.getElementById('camera-feed');
         const cameraCanvas = document.getElementById('camera-canvas');
+        const cameraOverlayFrame = document.getElementById('camera-overlay-frame');
         const captureBtn = document.getElementById('capture-btn');
         let currentStream;
         let currentInputId;
 
+        // Progress Bar Elements
         const progressSteps = document.querySelectorAll('.progress-step');
         const progressLine = document.getElementById('progressLine');
         let currentStep = 1;
 
+        // Data Storage for files
+        const fileData = {};
+        
+        // List of Countries
         const countryList = [
             { code: "US", name: "United States" },
             { code: "GB", name: "United Kingdom" },
@@ -485,9 +550,8 @@
             { code: "VA", name: "Vatican City" }
         ];
 
-        // Initial animations
+        // --- Animations & UI Effects ---
         gsap.to(formContainer, { opacity: 1, y: 0, duration: 1, ease: "power2.out" });
-
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -501,6 +565,7 @@
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
 
+        // --- Core Functions ---
         function populateCountries() {
             let optionsHtml = `<option value="" disabled selected>Select your country</option>`;
             
@@ -508,7 +573,6 @@
             specialCountries.forEach(country => {
                 optionsHtml += `<option value="${country.code}">${country.name}</option>`;
             });
-
             const otherCountries = countryList.filter(c => c.code !== "US" && c.code !== "GB");
             otherCountries.sort((a, b) => a.name.localeCompare(b.name));
             otherCountries.forEach(country => {
@@ -563,7 +627,6 @@
             }
             personalInfoFields.innerHTML = html;
             
-            // Add event listener for ssn input
             if (countryCode === 'US') {
                 const ssnInput = document.getElementById('ssn');
                 ssnInput.addEventListener('input', formatSSN);
@@ -601,7 +664,7 @@
             checkStep1Validity();
         }
 
-        // Event Listeners
+        // --- Event Listeners ---
         countrySelect.addEventListener('change', () => {
             updatePersonalInfoFields();
             updateDocumentTypes();
@@ -618,32 +681,24 @@
         documentTypeSelect.addEventListener('change', () => {
             const selectedType = documentTypeSelect.value;
             let html = '';
-            document.querySelectorAll('input[type="file"]').forEach(input => {
-                input.value = '';
-                const btn = document.querySelector(`button[onclick*="${input.id}"]`);
-                if (btn) {
-                    btn.innerHTML = `<i class="fas fa-camera"></i> Open Camera`;
-                    btn.classList.remove('attached');
-                }
-            });
-
+            
             if (selectedType === 'passport') {
                 html = `
                     <div class="form-group visible">
                         <label for="passportUpload" class="required">Passport Scan</label>
                         <input type="file" id="passportUpload" name="passportUpload" accept="image/*" style="display:none;">
-                        <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment')">
+                        <button type="button" class="camera-button" onclick="openCamera('passportUpload', 'environment', 'passport')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="passportUploadError">Please upload your passport scan.</span>
+                        <span class="error-message" id="passportUploadError">Please take a picture of your passport.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="selfiePassportUpload" class="required">Selfie with Passport</label>
                         <input type="file" id="selfiePassportUpload" name="selfiePassportUpload" accept="image/*" style="display:none;">
-                        <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user')">
+                        <button type="button" class="camera-button" onclick="openCamera('selfiePassportUpload', 'user', 'passport-selfie')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="selfiePassportUploadError">Please upload a selfie with your passport.</span>
+                        <span class="error-message" id="selfiePassportUploadError">Please take a selfie with your passport.</span>
                     </div>
                 `;
             } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
@@ -651,36 +706,45 @@
                     <div class="form-group visible">
                         <label for="frontSide" class="required">Front Side of Document</label>
                         <input type="file" id="frontSide" name="frontSide" accept="image/*" style="display:none;">
-                        <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment')">
+                        <button type="button" class="camera-button" onclick="openCamera('frontSide', 'environment', 'id-card')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="frontSideError">Please upload the front side of your document.</span>
+                        <span class="error-message" id="frontSideError">Please take a picture of the front side of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="backSide" class="required">Back Side of Document</label>
                         <input type="file" id="backSide" name="backSide" accept="image/*" style="display:none;">
-                        <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment')">
+                        <button type="button" class="camera-button" onclick="openCamera('backSide', 'environment', 'id-card')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="backSideError">Please upload the back side of your document.</span>
+                        <span class="error-message" id="backSideError">Please take a picture of the back side of your document.</span>
                     </div>
                     <div class="form-group visible">
                         <label for="selfieDlId" class="required">Selfie with Document</label>
                         <input type="file" id="selfieDlId" name="selfieDlId" accept="image/*" style="display:none;">
-                        <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user')">
+                        <button type="button" class="camera-button" onclick="openCamera('selfieDlId', 'user', 'id-card-selfie')">
                             <i class="fas fa-camera"></i> Open Camera
                         </button>
-                        <span class="error-message" id="selfieDlIdError">Please upload a selfie with your document.</span>
+                        <span class="error-message" id="selfieDlIdError">Please take a selfie with your document.</span>
                     </div>
                 `;
             }
             dynamicFieldsContainer.innerHTML = html;
+            // Restore previous file states
+            for (const key in fileData) {
+                const button = document.querySelector(`[onclick*="'${key}'"]`);
+                if (button) {
+                    button.classList.add('attached');
+                    const fileName = fileData[key].name;
+                    button.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
+                }
+            }
             gsap.fromTo(dynamicFieldsContainer.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
             hideError('documentTypeError');
             checkStep2Validity();
         });
 
-        // Validation Functions
+        // --- Validation Functions ---
         function checkStep1Validity() {
             const countryCode = countrySelect.value;
             let isValid = false;
@@ -713,9 +777,9 @@
             const selectedType = documentTypeSelect.value;
             let isValid = false;
             if (selectedType === 'passport') {
-                isValid = document.getElementById('passportUpload').files.length > 0 && document.getElementById('selfiePassportUpload').files.length > 0;
+                isValid = fileData['passportUpload'] && fileData['selfiePassportUpload'];
             } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
-                isValid = document.getElementById('frontSide').files.length > 0 && document.getElementById('backSide').files.length > 0 && document.getElementById('selfieDlId').files.length > 0;
+                isValid = fileData['frontSide'] && fileData['backSide'] && fileData['selfieDlId'];
             }
             document.getElementById('submitBtn').disabled = !isValid;
             document.getElementById('submitBtn').style.backgroundColor = isValid ? 'var(--primary-color)' : 'var(--next-btn-inactive)';
@@ -732,19 +796,17 @@
             }
         }
 
-        // Stepper Navigation
+        // --- Stepper Navigation & Animation ---
         function nextStep(stepNumber) {
             const currentStepElement = document.querySelector('.form-section.active');
             const nextStepElement = document.getElementById(`step${stepNumber}`);
             
-            // Validate only when moving forward
             const isMovingForward = stepNumber > currentStep;
             if (isMovingForward) {
                 const isValid = validateStep(currentStep);
                 if (!isValid) return;
             }
 
-            // Animate transition
             gsap.to(currentStepElement, { opacity: 0, y: isMovingForward ? -20 : 20, duration: 0.3, onComplete: () => {
                 currentStepElement.classList.remove('active', 'visible');
                 nextStepElement.classList.add('active', 'visible');
@@ -773,6 +835,7 @@
             gsap.to(progressLine, { width: `${progress}%`, duration: 0.4 });
         }
 
+        // --- Step Validation ---
         function validateStep(stepNumber) {
             let isValid = true;
             document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
@@ -825,24 +888,24 @@
             } else if (stepNumber === 3) {
                 const selectedType = documentTypeSelect.value;
                 if (selectedType === 'passport') {
-                    if (!document.getElementById('passportUpload').files.length) {
+                    if (!fileData['passportUpload']) {
                         showError('passportUploadError', 'Passport scan is required.');
                         isValid = false;
                     }
-                    if (!document.getElementById('selfiePassportUpload').files.length) {
+                    if (!fileData['selfiePassportUpload']) {
                         showError('selfiePassportUploadError', 'Selfie with passport is required.');
                         isValid = false;
                     }
                 } else if (selectedType === 'drivers-license' || selectedType === 'identification' || selectedType === 'id-card') {
-                    if (!document.getElementById('frontSide').files.length) {
+                    if (!fileData['frontSide']) {
                         showError('frontSideError', 'Front side of document is required.');
                         isValid = false;
                     }
-                    if (!document.getElementById('backSide').files.length) {
+                    if (!fileData['backSide']) {
                         showError('backSideError', 'Back side of document is required.');
                         isValid = false;
                     }
-                    if (!document.getElementById('selfieDlId').files.length) {
+                    if (!fileData['selfieDlId']) {
                         showError('selfieDlIdError', 'Selfie with document is required.');
                         isValid = false;
                     }
@@ -851,6 +914,7 @@
             return isValid;
         }
 
+        // Helper Functions
         function showError(elementId, message) {
             const errorElement = document.getElementById(elementId);
             if (errorElement) {
@@ -865,8 +929,9 @@
                 errorElement.style.display = 'none';
             }
         }
-
-        async function openCamera(inputId, facingMode) {
+        
+        // --- Camera & File Handling ---
+        async function openCamera(inputId, facingMode, overlayType) {
             currentInputId = inputId;
             const constraints = { video: { facingMode: facingMode } };
             try {
@@ -874,12 +939,22 @@
                 currentStream = stream;
                 cameraFeed.srcObject = stream;
                 cameraPopup.style.display = 'flex';
+                
+                // Set overlay class based on document type
+                cameraOverlayFrame.className = 'camera-overlay-frame';
+                if (overlayType === 'id-card') {
+                    cameraOverlayFrame.classList.add('id-card');
+                } else if (overlayType === 'passport') {
+                    cameraOverlayFrame.classList.add('passport');
+                } else {
+                    cameraOverlayFrame.classList.remove('id-card', 'passport');
+                }
+
                 gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
                 gsap.fromTo('.camera-content', { scale: 0.8, y: 50 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" });
-
             } catch (err) {
                 console.error("Error accessing camera:", err);
-                let errorMessage = "Failed to open camera. ";
+                let errorMessage = "Failed to access camera. ";
                 if (location.protocol === 'http:') {
                     errorMessage += "Camera access requires HTTPS. Please ensure your website is running on a secure connection (https://).";
                 } else if (err.name === "NotAllowedError") {
@@ -913,13 +988,17 @@
                 const docId = getDocId(currentInputId);
                 const fileName = `${docId}.jpg`;
                 const file = new File([blob], fileName, { type: "image/jpeg" });
+                
+                // Store file in our data object and then attach to form
+                fileData[currentInputId] = file;
+
+                // Create a DataTransfer object to assign the file
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(file);
-                
                 const fileInput = document.getElementById(currentInputId);
                 fileInput.files = dataTransfer.files;
 
-                const cameraButton = document.querySelector(`button[onclick*="${currentInputId}"]`);
+                const cameraButton = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
                 if (cameraButton) {
                     cameraButton.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
                     cameraButton.classList.add('attached');
@@ -942,6 +1021,7 @@
             }
         }
 
+        // --- Form Submission ---
         document.getElementById('verificationForm').addEventListener('submit', (e) => {
             const isValid = validateStep(3);
             if (!isValid) {
@@ -954,11 +1034,13 @@
             }
         });
 
+        // --- Navigation Buttons ---
         nextBtn1.addEventListener('click', () => { nextStep(2); });
         nextBtn2.addEventListener('click', () => { nextStep(3); });
         backBtn2.addEventListener('click', () => { nextStep(1); });
         backBtn3.addEventListener('click', () => { nextStep(2); });
 
+        // --- Initial Setup ---
         populateCountries();
         updatePersonalInfoFields();
         updateDocumentTypes();
