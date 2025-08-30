@@ -419,9 +419,38 @@
             font-weight: bold;
         }
 
-        .check-circle-path {
-            stroke-dasharray: 200;
-            stroke-dashoffset: 200;
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4CAF50;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4CAF50;
+            fill: none;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        .success-animation svg {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 0 auto;
+            box-shadow: inset 0px 0px 0px #4CAF50;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
         }
     </style>
 </head>
@@ -1132,14 +1161,20 @@
             }
             
             e.preventDefault();
+            const form = e.target;
+            
             gsap.to(formContainer, { opacity: 0, duration: 0.5, onComplete: () => {
                 formContainer.style.display = 'none';
                 successAnimation.style.display = 'block';
-                gsap.to(successAnimation, { opacity: 1, duration: 0.5 });
                 
-                const timeline = gsap.timeline();
-                timeline.fromTo('.checkmark__check', { strokeDashoffset: 200 }, { strokeDashoffset: 0, duration: 1, ease: "power2.inOut" })
-                        .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.5")
+                const timeline = gsap.timeline({ onComplete: () => {
+                    form.submit();
+                }});
+                
+                timeline.fromTo(successAnimation, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5 })
+                        .fromTo('.checkmark__circle', { strokeDashoffset: 166 }, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" })
+                        .fromTo('.checkmark__check', { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.inOut" }, "-=0.3")
+                        .fromTo(successAnimation.querySelector('h3'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2")
                         .fromTo(successAnimation.querySelector('p'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
             }});
         });
