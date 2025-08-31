@@ -28,6 +28,9 @@
             --capture-btn-hover-color: #5ac45a; /* Darker green on hover */
             --close-btn-color: #ff4d4d; /* Red for close button */
             --close-btn-hover-color: #cc0000; /* Darker red on hover */
+            --modal-bg: #4f3a2c;
+            --modal-border: #ff9933;
+            --modal-glow: #ff9933;
         }
 
         body {
@@ -60,6 +63,7 @@
             opacity: 0;
             overflow-y: auto; /* Allow form content to scroll if needed */
             max-height: calc(100vh - 40px);
+            visibility: hidden;
         }
 
         h2 {
@@ -456,9 +460,107 @@
             margin: 0 auto;
             box-shadow: inset 0px 0px 0px #4CAF50;
         }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 35px var(--modal-glow);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            border: 2px solid var(--modal-border);
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .modal-content .close-btn {
+            top: 15px;
+            right: 15px;
+        }
+
+        .modal-content h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content h3 i {
+            margin-right: 10px;
+            font-size: 30px;
+            color: var(--modal-glow);
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .modal-content ul li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .modal-content button:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 <body>
+
+    <div class="modal-overlay" id="noticeModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">X</span>
+            <h3>
+                <i class="fas fa-user-check"></i>
+                Important Notice ⚠️
+            </h3>
+            <p>To make the verification process successful, please follow the instructions below:</p>
+            <ul>
+                <li>1- Open this form via (Chrome, Edge... etc).</li>
+                <li>2- All edges of the document should be clear.</li>
+                <li>3- Take a selfie holding your documents.</li>
+            </ul>
+            <button onclick="closeModal()">Yes, I understand</button>
+        </div>
+    </div>
 
     <div class="container" id="formContainer">
         <h2>Identity Verification</h2>
@@ -538,6 +640,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         // DOM Elements
+        const noticeModal = document.getElementById('noticeModal');
         const formContainer = document.getElementById('formContainer');
         const countrySelect = document.getElementById('country');
         const personalInfoFields = document.getElementById('personalInfoFields');
@@ -621,7 +724,20 @@
         ];
 
         // --- Animations & UI Effects ---
-        gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+        function showForm() {
+            formContainer.style.visibility = 'visible';
+            gsap.to(formContainer, { opacity: 1, duration: 0.5, ease: "power2.out" });
+        }
+
+        function closeModal() {
+            gsap.to(noticeModal, { opacity: 0, duration: 0.5, onComplete: () => {
+                noticeModal.style.display = 'none';
+                showForm();
+            }});
+        }
+        
+        gsap.to('.modal-content', { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+        
         document.addEventListener('mousemove', (e) => {
             gsap.to('.glow', {
                 x: e.clientX,
